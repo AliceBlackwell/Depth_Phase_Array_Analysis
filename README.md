@@ -20,12 +20,20 @@ Clone the repository:
 ```bash
 git clone https://github.com/AliceBlackwell/Depth_Phase_Array_Analysis.git
 cd Depth_Phase_Array_Analysis
+```
 
+Create conda environment and install packages:
+
+```bash
 conda create -n dpa-env python=3.10.11
 conda activate dpa-env
 pip install -r requirements.txt
+```
 
-# Compile ISCLoc, navigate to ISClocRelease2.2.6/src2.2.7
+Compile ISCLoc (including changing the Makefile to point towards conda packages) and edit .bashrc:
+
+```bash
+cd ISClocRelease2.2.6/src2.2.7
 ./compile_iscloc.sh
 ```
 
