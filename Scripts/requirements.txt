@@ -1,0 +1,9 @@
+scipy==1.12.0
+obspy==1.4.0
+pandas==2.2.3
+rasterio==1.4.3
+scikit-learn==1.6.1
+beautifulsoup4==4.13.4
+cartopy==0.24.0
+seaborn==0.13.2
+obspyDMT==2.2.11
