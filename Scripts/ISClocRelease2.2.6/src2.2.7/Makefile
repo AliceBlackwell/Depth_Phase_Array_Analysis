@@ -84,8 +84,10 @@ else
 #
 	OS = linux
 # SuSe:
-	IPGSQL = -I/usr/include/pgsql
-	LAPACK = -L/usr/lib64 -llapack -lblas
+	#IPGSQL = -I/usr/include/pgsql
+	IPGSQL = -I$(CONDA_PREFIX)/include  #**changed to be conda installed and point to conda env
+	#LAPACK = -L/usr/lib64 -llapack -lblas
+	LAPACK = -L$(CONDA_PREFIX)/lib -llapack -lblas -lgfortran -Wl,-rpath,$(CONDA_PREFIX)/lib #**changed to be conda installed and point to conda env
 # Ubuntu:
 #	IPGSQL = -I/usr/include/postgresql
 #	LAPACK = -L/usr/lib -llapack -lblas
@@ -106,7 +108,7 @@ serial_db: CFLAGS = $(DEBUG) $(IPGSQL) $(MACOS) -DWITH_DB=1
 serial_db: $(objs)
 	$(CC) -o $(EXEC) $(objs) $(LIBS)
 	rm $(objs)
-
+	
 #
 #
 # Single-processor without database interface

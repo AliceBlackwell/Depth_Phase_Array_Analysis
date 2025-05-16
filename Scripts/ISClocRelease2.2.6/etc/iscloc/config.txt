@@ -10,8 +10,8 @@ errfile = stderr                # for errors
 # Station list file (comma separated file required for ISF input)
 #    Set pathname to the directory where isc_stalist is located
 #
-isf_stafile = /localhome/not-backed-up/ee18ab/01a_Relocation_Scripts/Rewrite_October_2024/ISClocRelease2.2.6/etc/Stations/ISC_AB_station_list.dat
-#isf_stafile = IR2_stalist      # IR2 station coordinates
+#isf_stafile = /localhome/not-backed-up/ee18ab/01a_Relocation_Scripts/Rewrite_October_2024/ISClocRelease2.2.6/etc/Stations/ISC_AB_station_list.dat
+isf_stafile = IR2_stalist      # IR2 station coordinates
 
 #
 # Database options

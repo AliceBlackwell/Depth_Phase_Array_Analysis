@@ -51,7 +51,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 
-mpl.rcParams['text.usetex'] = True
+#mpl.rcParams['text.usetex'] = True
 
 # IMPORT CLASSES
 from classes import Earthquake_event

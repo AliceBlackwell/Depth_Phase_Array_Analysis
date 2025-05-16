@@ -14,6 +14,8 @@ from obspy.geodetics import kilometers2degrees
 import scipy.stats as stats
 import seaborn as sns
 
+from classes import Earthquake_event
+
 def main(input_txt, iscloc_inputs):
     # open output file lines
     with open(input_txt) as file:
@@ -423,7 +425,7 @@ def strip_iscloc_results(final_3D_cat_name, analysis_only, iscloc_inputs, iscloc
         
         plot_data = plot_data[(pd.to_numeric(plot_data['ISC_depth'], errors='coerce')>=40)] # remove events which were initially <40 km deep
         plot_data = plot_data[(pd.to_numeric(plot_data['ISC_depth'], errors='coerce')<=350)]
-        plot_data = plot_data[(plot_data['no.total_time_defining_dp_AB']>0)] # only eents where phases were added
+        plot_data = plot_data[(plot_data['no.total_time_defining_dp_AB']>0)] # only events where phases were added
         plot_data = plot_data[(plot_data['AB_fixed']==0)] # no depth fixed events relocations
         final_cat_df = plot_data[cols].to_numpy()
         
@@ -540,5 +542,53 @@ def strip_iscloc_results(final_3D_cat_name, analysis_only, iscloc_inputs, iscloc
         print('AB err less:', counter_smaller, (counter_smaller/len(df_unfixed['ISF_depth_err'])*100))
         #print('Sum:', counter_larger + counter_same + counter_smaller)
         print('No. AB has new err for (previously NaN):', (len(df_unfixed['ISF_depth_err']) - (counter_larger + counter_same + counter_smaller)), ((len(df_unfixed['ISF_depth_err']) - (counter_larger + counter_same + counter_smaller))/len(df_unfixed['ISF_depth_err']))*100) 
+        return
+        
+def extract_iscloc_relocation_depth(output_dir, catalogue, event):
+    
+    # defaults
+    depth=0
+    n_td_phases_AB = 0
+    fixed = 0
+    
+    # Select event from catalogue and define attributes
+    event = Earthquake_event(catalogue[int(event)-1])
+    event.define_event()
+    ev_id = event.event_id
+    
+    outfile = output_dir + str(ev_id) + '.out'
+    
+    if os.path.isfile(outfile):
+        pass
+    else:
+        return depth
+            
+    # open output file lines
+    with open(outfile) as file:
+         iscloc_lines = [line.rstrip() for line in file]
+    file.close()
+
+    for line in iscloc_lines:
+        # ============== STRIPPING OUT CATALOGUE RESULTS ===============
+        # depth phase depth and error (DPdep, Err)  
+        if re.search('AB\s+[0-9]\s+AB ', line):
+            dp = line[71:76].strip()
+                        
+            if 'f' in line[76:77]:
+                fixed = 1
+                
+        # Find time defining depth phases (AB)           
+        elif re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\s',line):
+            if 'FDSN  ZZ' in line:
+                if 'T__' in line:
+                    n_td_phases_AB += 1 
+                    
+    #if depth >=40 and depth <=350 and n_td_phases_AB>0 and fixed!=1:
+    if n_td_phases_AB>0 and fixed!=1: #looking at deep EQs
+        depth = dp
+
+    return depth
+    
+    
 
 
