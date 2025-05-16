@@ -18,7 +18,7 @@ This project automates the following:
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/depth-phase-array-analysis.git
+git clone https://github.com/AliceBlackwell/depth-phase-array-analysis.git
 cd depth-phase-array-analysis
 
 conda create -n dpa-env python=3.10.11
