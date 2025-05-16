@@ -1,0 +1,188 @@
+ISCLOC INSTALLATION
+#
+# Istvan Bondar, ISC, November 2013
+#
+
+
+Dependencies
+============
+
+LAPACK and LBLAS (required)
+    MacOS X 10.6 and later 
+        lapack and lblas are part of MacOS X Accelerate framework
+    linux/unix 
+        install the corresponding rpm or download it from 
+            www.netlib.org/lapack
+
+PostgreSQL client (optional database interface)
+    MacOS X 10.6 - 10.8 
+        part of MacOS X
+    MacOS X 10.9  
+        the postgresql client was removed from MacOS X 10.9, but the libraries
+        are still there. 
+    linux/unix 
+        install the PostgreSQL client (don't forget the libpq-fe.h file!) 
+    
+Grand Central Dispatch (optional multicore processing)
+    MacOS X 10.6 and later 
+        part of MacOS X
+    linux/unix (tested on Ubuntu) 
+        install clang and llvm (see llvm.org).
+        install libBlocksRuntime, libkqueue, libpthread_workqueue and libdispatch
+            see http://mark.heily.com/project/libblocksruntime
+
+RSTT (optional TT predictions for Pn/Sn and Pg/Lg from a global RSTT model)
+    download the latest version of the RSTT package from  
+        http://www.sandia.gov/rstt
+    MacOS X 10.6 and later 
+        no compilation is required.
+    linux/unix
+        make clean_objs
+        make geotess
+        make cc
+        make c
+    
+Environment variables
+=====================
+
+QETC - Directory pathname for data files. If not exists, defaults to current 
+       working directory.
+PGHOSTADDR, PGPORT, PGDATABASE, PGUSER, PGPASSWORD - Postgres specific.
+SLBMROOT - Directory pathname for the RSTT package.
+
+
+Single-core processing
+======================
+
+Linux/unix
+----------
+
+Edit the Makefile 
+
+   Set the LAPACK variable to the directory path of the lapack library. 
+   Set the IPGSQL variable to the directory path of the libpq-fe.h include file.
+
+Compile with database interface
+
+   If you are going to use a database interface, compile the code with
+
+   make serial_db
+
+   Note that this is the default make behaviour.
+
+Compile without using a database interface
+
+   If you do not have a database following the ISC schema installed in your 
+   computer, compile the code by disabling the database interface:
+
+   make serial_nodb
+
+   In this case you will only be able to use ISF input files.
+
+Read the iscloc documentation.
+
+MacOS X
+-------
+
+Compile with database interface
+
+   Edit the Makefile 
+
+   Mac OS X 10.6 - 10.8:
+       Comment out the line 
+       IPGSQL = -I../postgresql_include
+   Mac OS X 10.9:
+       Include the line 
+       IPGSQL = -I../postgresql_include
+
+   If you are going to use a database interface, compile the code with
+
+   make serial_db
+
+   Note that this is the default make behaviour.
+
+Compile without using a database interface
+
+   If you do not have a database following the ISC schema installed in your 
+   computer, compile the code by disabling the database interface:
+
+   make serial_nodb
+
+   In this case you will only be able to use ISF input files.
+
+Read the iscloc documentation.
+
+
+Multi-core processing
+=====================
+
+The ISC locator can take advantage of multicore processors using
+Apple's Grand Central Dispatch technology. Since Grand Central
+Dispatch is open source, with a little effort you can install it on
+linux/unix machines, too.
+
+If enabled, concurrent processing is used to
+    identify phases in a reading;
+    evaluate trial hypocentres in the NA search;
+    calculate travel-time residuals;
+    invert individual blocks of the block-diagonal data covariance matrix;
+    project the data set into the eigensystem.
+
+On a MacBookPro with a quadcore i7, iscloc runs about three times
+faster than just using a single processor. On the other hand, you'd
+better have at least 2GB of memory.
+
+Linux/unix
+----------
+
+Edit the Makefile 
+
+   Set the LAPACK variable to the directory path of the lapack library. 
+   Set the IPGSQL variable to the directory path of the libpq-fe.h include file.
+
+Compile with database interface
+
+   If you are going to use a database interface, compile the code with
+
+   make parallel_db
+
+Compile without using a database interface
+
+   If you do not have a database following the ISC schema installed in your 
+   computer, compile the code by disabling the database interface:
+
+   make parallel_nodb
+
+   In this case you will only be able to use ISF input files.
+
+Read the iscloc documentation.
+
+Mac OS X
+--------
+
+Compile with database interface
+
+   Edit the Makefile 
+
+   Mac OS X 10.6 - 10.8:
+       Comment out the line 
+       IPGSQL = -I../postgresql_include
+   Mac OS X 10.9:
+       Include the line 
+       IPGSQL = -I../postgresql_include
+
+   If you are going to use a database interface, compile the code with
+
+   make parallel_db
+
+Compile without using a database interface
+
+   If you do not have a database following the ISC schema installed in your 
+   computer, compile the code by disabling the database interface:
+
+   make parallel_nodb
+
+   In this case you will only be able to use ISF input files.
+
+Read the iscloc documentation.
+

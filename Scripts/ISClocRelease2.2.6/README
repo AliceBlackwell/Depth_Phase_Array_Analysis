@@ -1,0 +1,32 @@
+ISCLOC README
+#
+# Istvan Bondar, ISC, November 2013
+#
+iscloc is the open source code of the ISC location algorithm; it is provided
+as is. The tar file contains the source code, the data files used by the 
+locator, documentation and examples.
+
+The installation instructions are found in the INSTALL file.
+The iscloc code was successfully compiled on linux boxes (Suse, Redhat and 
+Ubuntu), as well as under Mac OS 10.7, 10.8 and 10.9. No attempts were made to
+compile it under MS Windows.
+
+The iscloc documentation is found in the doc directory, the
+source code is found in the src directory.
+
+The rstt_src directory contains the RSTT-enabled version of the ISC locator.
+
+The etc directory tree contains the data files iscloc reads.
+
+The isf directory contains examples for ISF input and output.
+Note that because of the random number generation processes in the 
+Neighbourhood Algorithm you may expect small variations in the output results, 
+especially when multicore processing is enabled.
+
+The utilities directory contains a Perl script that plots the misfits
+of the trial hypocentres in the Neighbourhood Algorithm. The script
+reads the file created by iscloc when the command line instruction
+    write_gridsearch_results=1
+is given.
+
+

@@ -1,0 +1,5 @@
+- parameter pertol is incorporated into standard ISC locator
+- ISF I/O is allowed
+- Now only difference is in read_db_gem.c
+        station on and off dates are accounted for.
+

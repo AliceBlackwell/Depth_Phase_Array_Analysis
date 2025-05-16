@@ -1,0 +1,110 @@
+# Configuration file read by iscloc
+
+#
+# Log and error files
+#
+logfile = stdout                # default - overwritten by yyyymmv if given
+errfile = stderr                # for errors
+
+#
+# Station list file (comma separated file required for ISF input)
+#    Set pathname to the directory where isc_stalist is located
+#
+isf_stafile = /nfs/b0067/Users/Students/ee18ab/08_ISC_loc/New/ISClocRelease2.2.6/etc/Stations/isc_stalist
+#isf_stafile = IR2_stalist      # IR2 station coordinates
+
+#
+# Database options
+#
+update_db = 0                   # flag 1/0 for write to database on/off
+nextid_db = isc                 # get new unique ids from this account
+repid = 100                     # reporter id for new hypocentres and assocs
+out_agency = ISC                # author for new hypocentres and assocs
+in_agency = ISC                 # author for input assocs
+
+#
+# Travel time tables
+#
+ttime_table = ak135             # TT table prefix [ak135|jb]
+
+#
+# ETOPO parameters
+#
+# ETOPO5 (resampled to 5 x 5 minute resolution, ~ 19MB)
+etopofile = etopo5_bed_g_i2.bin # filename for ETOPO file
+etoponlon = 4321                # number of longitude samples in ETOPO
+etoponlat = 2161                # number of latitude samples in ETOPO
+etopores = 0.0833333            # cellsize in ETOPO
+
+#
+# agencies whose hypocenters not to be used in setting the initial hypocentre
+#
+# UNK  - unknown agency
+# NIED - truncates origin time to the minute
+# HFS, NAO, LAO - single array locations
+nohypo_agencies = UNK,NIED,HFS,HFS1,HFS2,NAO,LAO
+
+#
+# Neighbourhood Algorithm parameters
+#    increased search region and sample size!
+#
+do_gridsearch = 1               # perform NA?
+iseed = 5590                    # random number seed
+na_radius = 5.                  # search radius (deg) around initial epicentre
+na_deptol = 300.                # search radius (km) around initial depth
+na_ottol = 30.                  # search radius (s) around initial origin time
+na_lpnorm = 1.                  # p-value for norm to compute misfit [1,2]
+na_itermax = 5                  # max number of iterations
+na_ncells = 25                  # number of cells to be resampled at each iter
+na_nsamplei = 700               # size of initial sample
+na_nsample = 100                # size of subsequent samples
+#na_nsamplei = 3500             # size of initial sample (slow but exhaustive)
+#na_nsample = 200               # size of subsequent samples
+
+#
+# Depth resolution
+#
+mindepthpha = 5                 # min number of depth phases for depdp
+ndepagency = 2                  # min number of agencies for depth resolution
+localdist = 0.2                 # max local distance [deg]
+minlocalsta = 1                 # min number of local defining stations
+spdist = 3.                     # max S-P distance [deg]
+min_s_p = 5                     # min number of defining S-P phase pairs
+min_corepha = 5                 # min number of defining core reflection phases
+default_depth = 0.              # used if seed hypocentre depth is NULL
+maxdeperror_shallow = 30.       # max depth error for crustal free-depth
+maxdeperror_deep  = 60.         # max depth error for deep free-depth
+
+#
+# Linearized inversion
+#
+min_iter = 4                    # min number of iterations
+max_iter = 20                   # max number of iterations
+min_phases = 4                  # min number of defining phases
+sigmathres = 6.                 # used to exclude big residuals from solution
+do_correlated_errors = 1        # account for correlated errors?
+allow_damping = 1               # allow damping of model vector?
+confidence = 90.                # confidence level for uncertainties [90|95|98]
+
+#
+# Magnitude calculations
+#
+mbQ_table = GR                  # magnitude correction table [GR|VC|MB|none]
+body_mag_min_dist = 21.         # min distance for mb
+body_mag_max_dist = 100.        # max distance for mb
+body_mag_min_per = 0.           # min period for mb
+body_mag_max_per = 3.           # max period for mb
+surf_mag_min_dist = 20.         # min distance for MS
+surf_mag_max_dist = 160.        # max distance for MS
+surf_mag_min_per = 10.          # min period for MS
+surf_mag_max_per = 60.          # max period for MS
+surf_mag_max_depth = 60.        # max depth for MS
+pertol = 5                      # MSH period tolerance around MSZ period
+mag_range_warn_thresh = 2.2     # allowable range around network magnitude
+
+#
+# RSTT-specific parameters
+#    Set pathname to the directory where the RSTT model is located
+#
+rstt_model = /export/home/istvan/SLBM_Root.3.0.2.Linux/models/rstt.2.3.geotess
+use_RSTT_PgLg = 0               # use RSTT Pg/Lg predictions?

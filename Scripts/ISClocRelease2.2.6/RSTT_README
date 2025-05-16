@@ -1,0 +1,71 @@
+RSTT-enabled ISC location algorithm
+
+The Regional Seismic Travel Time (RSTT) software package has been developed
+by the US DoE Lawrence Livermore, Los Alamos and Sandia National Laboratories,
+and it provides regional Pg, Lg, Pn and Sn travel time predictions through a
+3D velocity model (also part of the RSTT package). See further details in
+
+    Myers, S.C., M. L. Begnaud, S. Ballard, M. E. Pasyanos, W. S. Phillips,
+    A. L. Ramirez, M. S. Antolik, K. D. Hutchenson, J. Dwyer, and C. A. Rowe,
+    and G. S. Wagner. A crust and upper mantle model of Eurasia and North
+    Africa for Pn travel time calculation, Bull. Seismol. Soc. Am., 100,
+    640-656, 2010.
+
+    Myers, S.C, M. L. Begnaud, and S. Ballard.
+    Extending Regional Seismic Travel Time (RSTT) Tomography to New Regions,
+    in Proceedings of the 2011 Monitoring Research Review: Ground-Based Nuclear
+    Explosion Monitoring Technologies, LA-UR-11-04823, 342-351, 2011.
+
+In order to use the iscloc RSTT functionality, download the latest version of
+the RSTT package from the website 
+    http://www.sandia.gov/rstt
+
+RSTT environment variables (required)
+
+    Create the environment variable SLBMROOT pointing to the directory where
+    RSTT is installed. For instance:
+        export SLBMROOT=/export/home/istvan/SLBM_Root.3.0.2.Linux
+
+    Add {SLBMROOT}/lib to your $LD_LIBRARY_PATH (on a Mac: $DYLD_LIBRARY_PATH)
+        export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$SLBMROOT/lib
+        
+Building the RSTT package
+
+    The RSTT-enabled iscloc calls RSTT functions through the C interface 
+    library. Therefore, you only need to compile the main C++ and the C 
+    interface libraries.
+
+    On MacOS X you can use SLBM as is, no compilation is required.
+    On a linux/unix machine execute the commands:
+        make clean_objs
+        make geotess
+        make cc
+        make c
+
+Building the RSTT-enabled ISC locator
+
+    Edit the Makefile in the rstt_src directory to set the ISCPATH variable 
+    to the directory where the iscloc source files are found. For instance:
+        ISCPATH = /export/home/istvan/ISClocRelease2.2.4/src
+    
+    To compile the RSTT-enabled iscloc, use the Makefile in the rstt_src 
+    directory. Please read also the notes in the INSTALL file.
+
+    Note that at the moment multicore-processing is not enabled with RSTT as
+    RSTT is not thread-safe.
+
+RSTT-specific configuration parameters
+
+    There are two RSTT-specific configuration parameters in the config.txt file,
+        rstt_model - the pathname for the RSTT model 
+        use_RSTT_PgLg - enable/disable the use of RSTT Pg/Lg TT predictions.
+    use_RSTT_PgLg and rstt_model can also be given in the instruction line.   
+
+    The RSTT crustal phase travel-time predictions and their partial 
+    derivatives are less reliable than the mantle phase (Pn/Sn) predictions. 
+    Hence, for the moment the RSTT crustal phase predictions are turned off by 
+    default. You can override this by setting use_RSTT_PgLg=1 either in the 
+    config.txt file or you can provide it as a command line argument.
+    
+    
+

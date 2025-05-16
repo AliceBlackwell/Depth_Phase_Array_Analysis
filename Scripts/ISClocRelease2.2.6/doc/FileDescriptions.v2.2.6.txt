@@ -1,0 +1,390 @@
+$QETC/iscloc directory
+======================
+
+config.txt
+
+    iscloc configuration parameters.
+
+    Format:
+        name = value
+
+    Output filenames:
+        logfile              - pathname for logfile
+        errfile              - pathname for error messages
+    Station list file (required for ISF input):
+        isf_stafile          - pathname for station file
+    Database options:
+        update_db            - write results to database [0|1]
+        nextid_db            - get new unique ids from this account
+        repid                - reporter id for new hypocentres and assocs
+        out_agency           - author for new hypocentres and assocs
+        in_agency            - author for input assocs
+    Travel time tables:
+        ttime_table          - TT table name [ak135|jb]
+    ETOPO:
+        etopofile            - pathname for ETOPO file
+        etoponlon            - number of longitude samples in ETOPO
+        etoponlat            - number of latitude samples in ETOPO
+        etopores             - cellsize in ETOPO
+    Agencies whose hypocenters not to be used in setting the initial hypocentre:
+        nohypo_agencies      - list of agencies
+    Neighbourhood Algorithm parameters:
+        do_gridsearch        - perform NA search [0|1]
+        iseed                - random number seed
+        na_radius            - search radius (deg) around initial epicentre
+        na_deptol            - search radius (km) around initial depth
+        na_ottol             - search radius (s) around initial origin time
+        na_lpnorm            - p-value for norm to compute misfit [1,2]
+        na_itermax           - max number of iterations
+        na_ncells            - number of cells to be resampled
+        na_nsamplei          - size of initial sample
+        na_nsample           - size of subsequent samples
+    Depth resolution:
+        ndepagency           - min number of agencies for depth resolution
+        mindepthpha          - min number of depth phases for depth-phase depth
+        min_corepha          - min number of defining core reflection phases
+        localdist            - max local distance [deg]
+        minlocalsta          - min number of local defining stations
+        spdist               - max S-P distance [deg]
+        min_s_p              - min number of defining S-P phase pairs
+        default_depth        - used if seed hypocentre depth is NULL
+        maxdeperror_shallow  - max depth error for crustal events to accept
+                               a free-depth solution
+        maxdeperror_deep     - max depth error for deep events to accept
+                               a free-depth solution
+    Linearized inversion:
+        min_iter             - min number of iterations
+        max_iter             - max number of iterations
+        min_phases           - min number of defining phases
+        sigmathres           - threshold to exclude big residuals from solution
+        do_correlated_errors - account for correlated errors [0|1]
+        allow_damping        - allow damping of model vector [0|1]
+        confidence           - confidence level for uncertainties [90|95|98]
+    Magnitude calculations:
+        mbQ_table            - mb correction [GR, VC, none]
+        body_mag_min_dist    - min distance for mb
+        body_mag_max_dist    - max distance for mb
+        body_mag_min_per     - min period for mb
+        body_mag_max_per     - max period for mb
+        surf_mag_min_dist    - min distance for MS
+        surf_mag_max_dist    - max distance for MS
+        surf_mag_min_per     - min period for MS
+        surf_mag_max_per     - max period for MS
+        surf_mag_max_depth   - max depth for MS
+        mag_range_warn_thresh - allowable range around network magnitude
+    RSTT-specific parameters (for the RSTT-enabled version of the locator)
+        rstt_model           - pathname for the RSTT model
+        use_RSTT_PgLg = 0    - use RSTT Pg/Lg predictions [0|1]
+
+
+ak135_model.txt
+jb_model.txt
+
+    Model-specific configuration parameters.
+
+    Model constants:
+        moho              - Moho discontinuity depth
+        conrad            - Conrad discontinuity depth
+        moho_radius       - Moho distance from the centre of the Earth
+        max_depth_km      - max event depth
+    Surface velocities for elevation corrections:
+        ssurfvel          - Sg velocity
+        psurfvel          - Pg velocity
+    Map reported phase names to IASPEI standard phase list:
+        phase_map         - pairs of reported phase and ISC phase names
+    List of allowable ISC phases:
+        allowable_phases  - list of phases to which reported phases can be renamed
+    List of allowable first-arriving P phases:
+        allowable_first_P - list of phases to which reported first-arriving
+                            P phases can be renamed.
+    Optional allowable first-arriving P phases:
+        optional_first_P  - list of phases to which reported first-arriving
+                            P phases can be renamed.
+    List of allowable first-arriving S phases:
+        allowable_first_S - list of phases to which reported first-arriving
+                            S phases can be renamed.
+    Optional allowable first-arriving S phases:
+        optional_first_S  - list of phases to which reported first-arriving
+                            S phases can be renamed.
+    List of ISC phases for which residuals will not be calculated:
+        no_resid_phase    - list of phase names
+    Phase-distance dependent a priori measurement errors:
+        phase_weight      - phase, mindelta, maxdelta, measurement error
+    Phases that can contribute to bodywave magnitudes:
+        mb_phase          - list of phase names
+    Phases that can contribute to surface wave magnitudes:
+        ms_phase          - list of phase names
+
+
+$QETC/ak135 directory
+=====================
+
+ELCOR.dat
+
+    ak135 ellipticity correction coefficients.
+        Kennett, B.L.N. and O. Gudmundsson, 1996,
+            Ellipticity corrections for seismic phases,
+            Geophys. J. Int., 127, 40-48.
+
+    For each phase:
+        phase name, number of distance samples, min dist, max dist
+        distance (deg)
+        tau0 (at 0, 100, 200, 300, 500, 700 km)
+        tau1 (at 0, 100, 200, 300, 500, 700 km)
+        tau2 (at 0, 100, 200, 300, 500, 700 km)
+
+ak135.<phase>.tab
+
+    ak135 travel-time tables.
+        Kennett, B.L.N., E.R. Engdahl and R. Buland, 1995,
+            Constraints on seismic velocities in the Earth from traveltimes,
+            Geophys. J. Int., 122, 108-124.
+
+    Format:
+        number of distance and depth samples
+        delta samples (max 25 in a line)
+        depth samples (one line)
+        TT table   (rows - delta, columns - depth)
+        dtdd table (rows - delta, columns - depth)
+        dtdh table (rows - delta, columns - depth)
+    if surface reflection (e.g. pP):
+        bounce point distance table (rows - delta, columns - depth)
+
+$QETC/jb directory
+==================
+
+jb.<phase>.tab
+
+    Jeffreys-Bullen travel-time tables.
+        Jeffreys, H. and K.E. Bullen, 1940,
+            Seismological tables,
+            Br. Assoc. Adv. Sci., Gray-Milne Trust, London.
+
+    Format:
+        same as ak135.<phase>.tab
+
+$QETC/Flinn_Engdahl directory
+=============================
+
+FE.dat
+
+    Flinn-Engdahl regionalization scheme, 1995 version.
+        Young, J.B., Presgrave, B.W., Aichele, H., Wiens, D.A. and Flinn, E.A.,
+            1996, The Flinn-Engdahl Regionalisation Scheme: the 1995 revision,
+            Phys. Earth Planet. Int., 96, 223-297.
+        Flinn, E.A., Engdahl, E.R. and Hill, A.R., 1974,
+            Seismic and geographical regionalization,
+            Bull. Seism. Soc. Am., 64, 771-993.
+        Flinn, E.A., and Engdahl, E.R., 1965,
+            A proposed basis for geographical and seismic regionalization,
+            Rev. Geophys., 3, 123-149.
+
+    Format:
+        For each latitude (from 90N to 90S) a set of longitude ranges
+        is given (first part of the file).
+        The second part of the file lists the geographic region numbers
+        for each latitude for within the longitude ranges.
+
+default_depth0.5.grid
+
+    Default depths on a 0.5 x 0.5 grid derived from EHB and relocated ISC
+    free depth solutions.
+        Bondár, I., and D. Storchak, 2011,
+            Improved location procedures at the International Seismological Centre,
+            Geophys. J. Int., doi: 10.1111/j.1365-246X.2011.05107.x.
+
+    The default depth grid follows gridline registration, i.e. the nodes are
+    centered on the grid line intersections and the data points represent
+    the median value in a cell of dimensions (gres x gres) centered on the
+    nodes.
+
+    lat(i-1) +--------+--------+--------+
+             |        |        |        |
+             |        |        |        |
+             |    #########    |        |
+             |    #   |   #    |        |
+    lat(i)   +----#---o---#----+--------+
+             |    #   |   #    |        |
+             |    #########    |        |
+             |        |        |        |
+             |        |        |        |
+    lat(i+1) +--------+--------+--------+
+          lon(j-1)  lon(j)   lon(j+1) lon(j+2)
+
+    Columns:
+       lat, lon: center of the grid cell
+       depth: median depth in the cell
+       min:   minimum depth in the cell
+       25Q:   25th percentile depth in the cell
+       75Q:   75th percentile depth in the cell
+       max:   maximum depth in the cell
+       N:     number of observations in the cell
+       range: quartile range (75Q - 25Q)
+    Rows are ordered by descending latitude and increasing longitude.
+
+default_depth0.5.grid.png
+
+    Figure of default-depth grid.
+
+grn_default_depth.ak135.dat
+grn_default_depth.jb.dat
+
+    Default depths for each Flinn-Engdahl geographic region number.
+        Bolton, M.K., D.A. Storchak, and J. Harris, 2006,
+            Updating default depth in the ISC bulletin,
+            Phys. Earth planet. Int., 158, 27-45.
+
+    Columns:
+       grn:   Flinn-Engdahl geographic region number
+       depth: depth for GRN
+
+$QETC/topo directory
+====================
+
+etopo5_bed_g_i2.bin
+
+    ETOPO1 bedrock file resampled to 5'x5' resolution (binary file).
+        Amante, C. and B.W. Eakins, 2009,
+            ETOPO 1 arc-minute global relief model: procedures, data sources
+            and analysis,
+            NOAA Technical Memorandum NESDIS NGDC-24, 19pp.
+
+    grdfilter -I5m etopo1_bed.grd -Fg15 -D4 -Getopo5_bed.grd
+        Gridline node registration used
+        x_min: -180 x_max: 180 x_inc: 0.0833333 nx: 4321
+        y_min: -90 y_max: 90 y_inc: 0.0833333 ny: 2161
+        z_min: -10515.5 z_max: 6917.75 name: m
+        scale_factor: 1 add_offset: 0
+    ETOPO parameters are specified in config.txt file.
+        etopofile - pathname for ETOPO file
+        etoponlon - number of longitude samples in ETOPO
+        etoponlat - number of latitude samples in ETOPO
+        etopores  - cellsize in ETOPO
+
+    Format:
+        etoponlon * etoponlat 2-byte integers.
+
+$QETC/variogram directory
+=========================
+
+variogram.model
+
+    Generic variogram model derived from P ground truth residuals.
+        Bondár, I., and K. McLaughlin, 2009,
+            Seismic location bias and uncertainty in the presence of correlated
+            and non-Gaussian travel-time errors,
+            Bull. Seism. Soc. Am., 99, 172-193.
+        Bondár, I., and D. Storchak, 2011,
+            Improved location procedures at the International Seismological Centre,
+            Geophys. J. Int., doi: 10.1111/j.1365-246X.2011.05107.x.
+
+    Format:
+        number of samples
+        sill
+        max station separation in km
+        station separation (km), variance (s^2)
+
+variogram.model.png
+
+    Figure of generic variogram model.
+
+priormeaserrors.png
+
+    Figure of a priori measurement error estimates.
+
+
+$QETC/magnitude directory
+=========================
+
+GRmbQ.dat
+    Gutenberg-Richter mb correction table.
+        Gutenberg, B. and C.F. Richter, 1956,
+            Magnitude and energy of earthquakes,
+            Ann. Geof., 9, 1-5.
+VCmbQ.dat
+    Veith-Clawson mb correction table.
+        Veith, K.F. and G.E. Clawson, 1972,
+            Magnitude from short-period P-wave data,
+            Bull. Seism. Soc. Am., 62, 2, 435-452.
+MBmbQ.dat
+    Murphy-Barker mb correction table.
+        Murphy, J.R. and B.W. Barker, 2003,
+            Revised B(d,h) correction factors for use
+            in estimation of mb magnitudes,
+            Bull. Seism. Soc. Am., 93, 1746-1764.
+
+    Format:
+        number of distance samples
+        delta samples
+        number of depth samples
+        depth samples
+        number of distance samples, number of depth samples
+        magnitude attenuation table Q(d, h)
+
+GRmbQ.png, VCmbQ.png, MBmbQ.png
+    Figures of GR, VC and MB correction curves.
+
+$QETC/Stations directory
+=========================
+
+isc_stalist
+
+    Comma-separated list of registered stations for ISF input.
+    Download it from the ISC website, where the file is regularly updated.
+
+    ftp://isc-mirror.iris.washington.edu/pub/iscloc/isc_stalist
+
+    Format:
+        sta, altsta, lat, lon, elevation
+
+IR2_stalist
+
+    New International Registry of Seismographic Stations format
+    Format:
+        net.agency.sta.location:lat lon elevation
+        * <EOE>
+
+Optional output file in current working directory
+=================================================
+
+The locator produces an output file on the trial hypocentres in the NA search
+when the configuration parameter do_gridsearch=1 and the command line
+instruction write_gridsearch_results=1 is given.
+
+Usage:
+   gridsearch_plot.pl filename [gtlat gtlon gtot gtdepth [lat lon ot depth]]
+where
+   filename is a file written by isloc when the command line instruction
+      write_gridsearch_results=1 was given. The filename is constructed
+      by iscloc as
+      {isc_evid}.{locator_option}.gsres where locator option is
+         option = 0 free depth
+         option = 1 fix to region-dependent default depth
+         option = 2 fix depth to value provided by analyst
+         option = 3 fix depth to depth-phase depth
+         option = 4 fix location
+         option = 5 fix depth and location.
+   gtlat gtlon gtot gtdepth are the optional GT coordinates of the event
+      (latitude, longitude, origin epoch(!) time, and depth).
+   lat lon ot depth are the optional (final) coordinates of the event
+      (latitude, longitude, origin epoch(!) time, and depth).
+Output:
+   {isc_evid}.{locator_option}.gsres.ps
+
+The header lines contain the search parameters, around the initial hypocentre.
+
+Columns:
+    trial hypocentre id,
+    sample number in an iteration,
+    trial hypocentre latitude, longitude, origin epoch time, depth,
+    misfit, Lp-norm, penalty (misfit = Lp-norm of residuals + penalty),
+    total number of associated seismic (P, S-type) phases,
+    number of defining phases for the trial hypocentre,
+    number of independent defining phases for the trial hypocentre.
+
+    Note that after each iteration the trial hypocentre with the lowest misfit
+    is listed; in that cas the first column stands for the iteration number,
+    and the second is -1.
+
+
+

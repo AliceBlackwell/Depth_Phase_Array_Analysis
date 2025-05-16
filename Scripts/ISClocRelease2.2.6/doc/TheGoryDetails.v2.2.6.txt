@@ -1,0 +1,1720 @@
+main.c
+======
+
+Usage: iscloc [isf|isf2|yyyymmv|-] [< instructionfile]
+    If the argument is 'isf' then iscloc will expect input from an ISF file.
+        Instructions will be taken from stdin and the log will be written to
+        the file specified in the config.txt file.
+    If the argument is '-' then instructions will be taken from
+        stdin and the log will be written to the file specified in
+        the config.txt file.
+    Otherwise the argument 'yyyymmv' will be used to create the filenames
+        for the instruction file and the log file. This reflects
+        the ISC operational batch mode.
+
+Examples:
+    echo "update_db=0 isf_infile=isf.dat isf_outfile=isf.out" | iscloc isf
+    iscloc - < instruction_file > logfile
+    echo "11526867" | iscloc -
+    echo "11526867 indb=edit do_gridsearch=0 depth=NEIC" | iscloc -
+    echo "11526867 indb=isc isf_outfile=11526867.isf.out depth=NEIC" | iscloc -
+    iscloc 200905b
+
+Environment variables
+    QETC - Directory pathname for data files. If not exists, defaults
+           to current working directory.
+    QEDIT - Directory pathname for the instruction file (ISC specific).
+            If not exists, reads instructions from stdin.
+    QREVISE - Directory pathname for the log file (ISC specific).
+    PGHOSTADDR, PGPORT, PGDATABASE, PGUSER, PGPASSWORD - Postgres specific.
+
+Instructions
+    Instructions can either be given in the command line or
+    read from an instruction file. An instruction line is expected
+    for every event in the form:
+        isc_evid [par=value [par=value ...]]
+    where isc_evid is the event identifier, and the par=value pairs
+    (no space around the equal sign!) denote the optional instruction
+    name and value pairs.
+
+    database control
+        indb=string
+            Database account to read from.
+            default: $PGUSER
+        outdb=string
+            Database account to write to.
+            default: $PGUSER
+    ISF input/output files
+        isf_infile
+            If specified, read ISF input from this file.
+        isf_outfile
+            If specified, write ISF output to this file.
+    verbosity
+        verbose=integer
+            Level of verbosity (0..5)
+            default: 0
+    fix hypocentre parameters
+        fix_hypo=string
+            An agency code to fix the hypocentre to.
+            If no code is given, the hypocentre will be fixed to the
+            median reported hypocentre parameters.
+        fix_time=DD-MM-YYYY_HH:MI:SS.SSS/string
+            A date-time value in the form of DD-MM-YYYY_HH:MI:SS.SSS, or
+            an agency code to fix the origin time to.
+            If no value or code is given, the origin time will be fixed
+            to the median reported origin time.
+        fix_location=string
+            An agency code to fix the epicentre to.
+            If no code is given, the epicentre will be fixed to the
+            median reported latitude, longitude values.
+        fix_depth=double/string
+            A depth value or an agency code to fix the depth to.
+            If no value or code is given, the depth will be fixed to the
+            median reported depth.
+        fix_depth_default
+            Fix the depth to the region-dependent default depth,
+            (from default depth grid or from Flinn-Engdahl region number).
+        fix_depth_depdp
+            Fix the depth to depth-phase depth obtained from the
+            depth-phase stacking.
+    initial hypocentre parameters
+        lat=double/string
+            A latitude value or an agency code to start the locator from.
+            If no value or code is given, the initial latitude will be
+            set to the median reported latitude.
+        lon=double/string
+            A longitude value or an agency code to start the locator from.
+            If no value or code is given, the initial longitude will be
+            set to the median reported longitude.
+        depth=double/string
+            A depth value or an agency code to start the locator from.
+            If no value or code is given, the initial depth will be
+            set to the median reported depth.
+        time=DD-MM-YYYY_HH:MI:SS.SSS/string
+            A date-time value in the form of DD-MM-YYYY_HH:MI:SS.SSS, or
+            an agency code to start the locator from.
+            If no value or code is given, the initial origin time will be
+            set to the median reported origin time.
+        write_gridsearch_results=integer
+            write NA results to file? [0/1]
+            default: 0
+
+    The instructions below can temporarily (for one event only) override
+    the parameter values set in the config.txt file:
+
+    database control
+        update_db=integer
+            write results to DB? [0/1]
+            default: 1
+    depth resolution criteria
+        ndepagency=integer
+            Minimum number of agencies reporting depth or core phases.
+            default: 2
+        mindepthpha=integer
+            Minimum number of time-defining first arriving P and depth
+            phase pairs to have depth-phase depth resolution.
+            default: 5
+        mincorepha=integer
+            Minimum number of time-defining first arriving P and
+            core phase (PcP, ScS) pairs to have depth resolution.
+            default: 5
+        localdist=double
+            Maximum epicentral distance for local stations (deg).
+            default: 0.2
+        minlocalsta=integer
+            Minimum number of time-defining first arriving P within
+            localdist to have depth resolution.
+            default: 1
+        spdist=double
+            Maximum epicentral distance for near-regional stations (deg).
+            default: 3.
+        min_s_p=integer
+            Minimum number of time-defining first arriving P and S pairs
+            to have depth resolution.
+            default: 5
+    correlated error structure
+        do_correlated_errors=integer
+            Account for correlated travel-time prediction errors? [0/1]
+            default: 1
+    Neighbourhood Algorithm parameters
+        do_gridsearch=integer
+            Perform NA grid search? [0/1]
+            default: 1
+        iseed=integer
+            Random number seed.
+            default: 5590
+        na_radius=double
+            Search radius around initial epicentre (deg).
+            default: 5.
+        na_deptol=double
+            Search radius around initial depth (km).
+            default: 300.
+        na_ottol=double
+            Search radius around initial origin time (s).
+            default: 30.
+        na_nsamplei=integer
+            Size of initial sample of trial hypocenters.
+            default: 700
+        na_nsample=integer
+            Size of subsequent samples.
+            default: 100
+        na_ncells=integer
+            Number of cells to be resampled.
+            default: 25
+        na_itermax=integer
+            Maximum number of iterations in NA grid search.
+            default: 10
+    ISF input/output files
+        isf_stafile
+            If specified, read station parameters from this file.
+            Required if isf_infile is given.
+    RSTT-specific parameters
+            use_RSTT_PgLg=integer
+            use RSTT Pg/Lg predictions? [0/1]
+            default: 0
+
+    If no instructions are given, an ISF input file must be specified in
+    the config.txt file.
+
+Input/output
+    The locator can read bulletin data either from an SQL database,
+    or from ISF text files.
+
+    The results can be written to an ISF output file, to the database, or both.
+    The log and error files are by default written to the stdout and stderr,
+    respectively.
+
+    The locator also reads the files below (see also FileDescriptions.txt).
+
+        Configuration parameters
+            $QETC/iscloc/config.txt
+        Velocity model and phase specific parameters
+            $QETC/iscloc/<ttime_table>_model.txt
+            Currently ak135 or jb is supported.
+        Travel-time tables
+            $QETC/<ttime_table> directory
+            The ak135 travel-time tables were generated by libtau,
+            the Jeffreys-Bullen travel-time tables were generated using
+            to old ISC locator code.
+        Ellipticity correction coefficients for ak135
+            $QETC/ak135/ELCOR.dat
+        Topography file
+            $QETC/topo/etopo5_bed_g_i2.bin
+            ETOPO1 bedrock resampled to 5'x5' resolution (binary file).
+            Needed to calculate bounce point corrections.
+        Flinn-Engdahl regionalization (Young et al., 1995)
+            $QETC/FlinnEngdahl/FE.dat
+        Default depth grid
+            $QETC/FlinnEngdahl/default.depth0.5.grid
+            Default depths defined on a 0.5 x 0.5 degree grid.
+        Default depth for Flinn-Engdahl regions
+            $QETC/FlinnEngdahl/grn_default_depth.<ttime_table>.dat
+            For locations where no default depth grid point exists.
+        Generic variogram model
+            $QETC/variogram/variogram.model
+            Needed to generate data covariance matrix.
+        Magnitude attenuation Q(d,h) curves
+            $QETC/magnitude/GRmbQ.dat (Gutenberg-Richter, 1956) or
+            $QETC/magnitude/VCmbQ.dat (Veith-Clawson, 1972)
+
+Configuration parameters
+    The configuration parameters are read from the config.txt file.
+
+    Output filenames:
+        logfile=string
+            Pathname for the iscloc logfile.
+            default: stdio
+        errfile=string
+            Pathname for the error messages file.
+            default: stderr
+    Optional ISF I/O:
+        isf_stafile=string
+            Pathname for station file (required if isf_infile is set).
+    Database control:
+        update_db=integer
+            Write results to DB? [0/1]
+            default: 1
+        nextid_db=string
+            Get new unique ids from this account.
+            default: isc
+        repid=integer
+            Reporter id for new hypocentres and associations.
+            default: 100
+        out_agency=string
+            Author for new hypocentres and associations.
+            default: ISC
+        in_agency=string
+            Author for input associations.
+            default: ISC
+    Agencies whose hypocenters not to be used in setting the initial
+    hypocentre:
+        nohypo_agencies=string
+            Comma separated list of agencies.
+            default: UNK,NIED,HFS,HFS1,HFS2,NAO
+    Travel time tables:
+        ttime_table=string
+            TT table name [ak135|jb].
+            default: ak135
+    ETOPO:
+        etopofile=string
+            Filename for ETOPO file.
+            default: etopo5_bed_g_i2.bin
+        etoponlon=integer
+            Number of longitude samples in ETOPO.
+            default: 4321
+        etoponlat=integer
+            Number of latitude samples in ETOPO.
+            default: 2161
+        etopores=double
+            Cellsize in ETOPO.
+            default: 0.0833333
+    Neighbourhood Algorithm parameters:
+        do_gridsearch=integer
+            Perform NA grid search? [0/1]
+            default: 1
+        iseed=integer
+            Random number seed.
+            default: 5590
+        na_radius=double
+            Search radius around initial epicentre (degrees).
+            default: 5.0
+        na_deptol=double
+            Search radius around initial depth (km).
+            default: 300.0
+        na_ottol=double
+            Search radius around initial origin time (s).
+            default: 30.0
+        na_itermax=integer
+            Maximum number of iterations in NA grid search.
+            default: 10
+        na_lpnorm=double
+            p-value for norm to compute misfit [1,2].
+            default: 1.
+        na_nsamplei=integer
+            Size of initial sample.
+            default: 700
+        na_nsample=integer
+            Size of subsequent samples.
+            default: 100
+        na_ncells=integer
+            Number of cells to be resampled.
+            default: 25
+    Depth resolution:
+        ndepagency=integer
+            Minimum number of agencies reporting depth or core phases.
+            default: 2
+        mindepthpha=integer
+            Minimum number of time-defining first arriving P and depth
+            phase pairs to have depth-phase depth resolution.
+            default: 5
+        mincorepha=integer
+            Minimum number of time-defining first arriving P and
+            core phase (PcP, ScS) pairs to have depth resolution.
+            default: 5
+        localdist=double
+            Maximum epicentral distance for local stations (deg).
+            default: 0.2
+        minlocalsta=integer
+            Minimum number of time-defining first arriving P within
+            localdist to have depth resolution.
+            default: 1
+        spdist=double
+            Maximum epicentral distance for near-regional stations (deg).
+            default: 3
+        min_s_p=integer
+            Minimum number of time-defining first arriving P and S pairs
+            to have depth resolution.
+            default: 5
+        default_depth=double
+            Used if seed hypocentre depth is NULL
+            default: 0.
+        maxdeperror_shallow=double
+            Maximum depth error for crustal events to accept free-depth
+            solution.
+            default: 30.
+        maxdeperror_deep=double
+            Maximum depth error for deep events to accept free-depth
+            solution.
+            default: 60.
+    Linearised inversion:
+        min_iter=integer
+            Minimum number of iterations.
+            default: 4
+        max_iter=integer
+            Maximum number of iterations.
+            default: 20
+        min_phases=integer
+            Minimum number of defining phases.
+            default: 4
+        allow_damping=integer
+            Allow damping of solution? [0/1]
+            default: 1
+        sigmathres=double
+            Residuals beyond sigmathres * prior measurement error will be
+            made non-defining.
+            default: 4.
+        confidence=double
+            Confidence level for uncertainties [90, 95, 98].
+            default: 90.
+        do_correlated_errors=integer
+            Account for correlated travel-time prediction errors? [0/1]
+            default: 1
+    Magnitude calculations:
+        body_mag_min_dist=double
+            Minimum mb distance.
+            default: 21.
+        body_mag_max_dist=double
+            Maximum mb distance.
+            default: 100.
+        surf_mag_min_dist=double
+            Minimum MS distance.
+            default: 20.
+        surf_mag_max_dist=double
+            Maximum MS distance.
+            default: 160.
+        body_mag_min_per=double
+            Minimum mb period.
+            default: 0.
+        body_mag_max_per=double
+            Maximum mb period.
+            default: 3.
+        surf_mag_min_per=double
+            Minimum MS period.
+            default: 10.
+        surf_mag_max_per=double
+            Maximum MS period.
+            default: 60.
+        surf_mag_max_depth=double
+            Maximum MS depth.
+            default: 60.
+        mag_range_warn_thresh=double
+            Allowable range around network magnitude.
+            default: 2.2
+    Magnitude correction table:
+        mbQ_table=string
+            mb attenuation corrections [GR, VC, none].
+            default: GR
+    RSTT-specific parameters:
+            use_RSTT_PgLg=integer
+            use RSTT Pg/Lg predictions? [0/1]
+            default: 0
+
+Model and phase specific configuration parameters
+    These parameters are read from the <ttime_table>_model.txt file.
+
+    Model constants:
+        moho
+            Depth of the Moho discontinuity [km].
+        conrad
+            Depth of the Conrad discontinuity [km].
+        moho_radius
+            Moho distance from the centre of the Earth [km].
+        max_depth_km
+            Maximum event depth [km].
+    Surface velocities for elevation corrections:
+        ssurfvel
+            Sg velocity [km/s].
+        psurfvel
+            Pg velocity [km/s].
+    Map reported phase names to IASPEI standard phase list:
+        phase_map
+            Table of reported and corresponding ISC phase names.
+    List of allowable ISC phases:
+        allowable_phases
+            List of phase names to which reported phases can be renamed.
+    List of allowable first-arriving P phases:
+        allowable_first_P
+            List of phases to which reported first-arriving P phases can be
+            renamed.
+    Optional allowable first-arriving P phases:
+        optional_first_P
+            Additional list of phases to which reported first-arriving P
+            phases can be renamed.
+    List of allowable first-arriving S phases:
+        allowable_first_S
+            List of phases to which reported first-arriving S phases can be
+            renamed.
+    Optional allowable first-arriving S phases:
+        optional_first_S
+            Additional list of phases to which reported first-arriving S
+            phases can be renamed.
+    List of ISC phases for which residuals will not be calculated:
+        no_resid_phase
+            List of phases that don't get residuals, which effectively
+            prevents them to be used in the location (e.g. amplitude
+            phases).
+    Phase-distance dependent a priori measurement errors:
+        phase_weight
+            List of a priori measurement errors within specified delta
+            ranges for IASPEI phases.
+            Table of phase, mindelta, maxdelta, measurement error values.
+    Phases that can contribute to bodywave magnitudes:
+        mb_phase
+            List of phase names.
+    Phases that can contribute to surface wave magnitudes:
+        ms_phase
+            List of phase names.
+
+Database interface
+    By default, iscloc reads event data from and writes the results to an
+    SQL database, described by the ISC database schema [reference]. The
+    database platform implemented at the ISC is PostgreSQL 8.4.
+
+    In PostgreSQL the database account is identified by the environment
+    variables $PGUSER and $PGPASSWORD, the database instance by $PGDATABASE
+    and the database server host by $PGHOSTADDR and $PGPORT. iscloc connects
+    to the database using these environment variables. By default, it reads
+    and writes the account identified by $PGUSER. This can be overridden by
+    the optional instruction line parameters indb (the database account to
+    read from) and outdb (the database account to write to) parameters. The
+    user must have read permission to indb and read/write permission to outdb.
+    If indb is specified but outdb not, outdb will set equal to indb. Writing
+    the results to the database can be disabled by setting the update_db
+    parameter to 0 in the config.txt file, or temporarily by setting it in
+    an event instruction line.
+
+    Note that if the database platform is other than PostgreSQL, the code
+    (iscloc.h, main.c, pgsql_funcs.c, read_db.c and write_db.c) should be
+    modified accordingly and the corresponding library interface should be
+    linked to the code (Makefile).
+
+main:
+    Reads environment variables.
+    Reads configuration file.
+    Opens log and error files.
+    Opens ISF input/output files if necessary.
+    Reads data files from $QETC directory.
+    Reads instruction line {
+        Reads event data from DB or ISF input.
+        Locates event.
+    }
+    Closes log and error files, frees allocated memory and exits.
+
+
+read_textfiles.c
+================
+
+read_config:
+    Sets external variables to values read from configuration file.
+    Each line can have one configuration variable and its value, eg:
+        name = value (note that spaces around '=').
+    Comment lines start with '#'.
+    See the list of configuration parameters at the description of main.c.
+
+read_model:
+    Sets external variables to values read from model file.
+    See the list of model parameters at the description of main.c.
+
+read_instruction:
+    Parses an instruction line for an evid and the corresponding
+    instructions. Instructions can either be given in the command line or
+    read from an instruction file. If the data are read from an ISF file
+    the instructions are applied to all events in the ISF file. If the
+    data are read from the database, an instruction line is expected
+    for every event in the form:
+        isc_evid [par=value [par=value ...]]
+    where isc_evid is the event identifier, and the par=value pairs
+    denote the optional instruction name and value pairs.
+    See the list of instructions at the description of main.c.
+
+read_data_files:
+    Reads data files from config directory.
+        $QETC/iscloc/<ttime_table>_model.txt
+        $QETC/<ttime_table>/*.tab
+        $QETC/ak135/ELCOR.dat
+        $QETC/topo/etopo5_bed_g_i2.bin
+        $QETC/FlinnEngdahl/FE.dat
+        $QETC/FlinnEngdahl/default.depth0.5.grid
+        $QETC/FlinnEngdahl/grn_default_depth.ak135.dat
+        $QETC/variogram/variogram.model
+        $QETC/magnitude/<mbQ_table>.dat
+
+
+locator_parallel.c
+==================
+
+eventloc.c:
+    Prepares for iterative linearised least-squares inversion.
+        sets starting hypocentre
+            if hypocenter is fixed then just calculate residuals and return
+        calculates station separations and nearest-neighbour station order
+        sets locator option according to instructions:
+            option = 0 free depth
+            option = 1 fix to region-dependent default depth
+            option = 2 fix depth to value provided by analyst (only on request)
+            option = 3 fix depth to depth-phase depth (only on request)
+            option = 4 fix location (only on request).
+            option = 5 fix depth and location (only on request).
+        performs phase identification w.r.t. starting hypocentre
+        if NA search is requested
+            performs NA grid search to get initial hypocentre for linearised
+                inversion (normally executed only once)
+            reidentifies phases according to best NA hypocentre
+        tests for depth resolution
+            fixes depth if necessary;
+            if there is a large (> 20 km) difference in depth,
+                repeats NA search with fixed depth
+        locates event
+        if convergent solution is obtained:
+            discards free-depth solution if depth error is too large
+                fixes depth and start over again
+            performs depth-phase stack if there is depth-phase depth resolution
+            calculates residuals for all reported phases
+            calculates location quality metrics
+            calculates magnitudes
+            writes results to database and/or ISF file
+        else:
+            reverts to previous prime hypocentre
+            calculates residuals for all reported phases
+
+synthetic:
+    Calculate residuals w.r.t. a hypocentre.
+    Sets prime hypocentre in DB if necessary.
+
+fixedhypo:
+    Calculate residuals w.r.t. a fixed hypocentre.
+
+locate_event:
+    Iterative linearised least-squares inversion of travel-times to
+        obtain a solution for the hypocentre.
+
+    Bondár, I., and K. McLaughlin, 2009,
+        Seismic location bias and uncertainty in the presence of correlated
+            and non-Gaussian travel-time errors,
+        Bull. Seism. Soc. Am., 99, 172-193.
+    Bondár, I., and D. Storchak, 2011,
+        Improved location procedures at the International Seismological Centre,
+        Geophys. J. Int., doi: 10.1111/j.1365-246X.2011.05107.x.
+
+    If do_correlated_errors is true, it projects Gm = d into the
+        eigensystem defined by the full data covariance matrix,
+        i.e. in the system where the full data covariance matrix
+        becomes diagonal
+    otherwise assumes independent errors and weights Gm = d with
+        the a priori estimates of measurement error variances.
+    WGm = Wd is solved with singular value decomposition.
+    Damping is applied if condition number is large.
+    Convergence test is based on  the Paige-Saunder convergence test value and
+        the history of model and data norms.
+    Formal uncertainties (model covariance matrix) are scaled
+        to <confidence>% confidence level.
+    Free-depth solutions:
+        Depth is fixed in the first min_iter-1 iterations.
+        Depth remains fixed if number of airquakes/deepquakes exceeds 2;
+            depthfixtype is set to 'B'.
+        Phases are reidentified if depth crosses Moho or Conrad discontinuities.
+    Correlated errors:
+        The data covariance and projection matrices are calculated once.
+        The data covariance matrix is recalculated if defining phases were
+            renamed during an iteration.
+        The projection matrix is recalculated if defining phases were renamed
+            or defining phases were made non-defining during an iteration.
+
+getndef:
+    Finds number of defining phases and the earliest arrival time.
+
+getphases:
+    Populates PHASELIST structure for defining phases.
+    PHASELIST contains:
+        phase name
+        number of observations for this phase
+        permutation vector that renders the data covariance matrix
+            block-diagonal (phase by phase)
+    Returns number of distinct defining phases.
+
+freephaselist:
+    Frees memory allocated to PHASELIST structure.
+
+getresids:
+    Sets residuals for defining phases.
+    Flags first arriving P and remove orphan depth phases.
+    Makes a phase non-defining if its residual is larger than
+        sigmathres times the prior measurement error and
+        deletes corresponding row and column in the data covariance and
+        projection matrices.
+
+build_gd:
+    Builds G matrix and d vector for equation Gm = d.
+    G is the matrix of partial derivates of travel-times,
+    d is the vector of residuals.
+
+project_gd:
+    Projects G matrix and d vector into eigensystem.
+    If enabled, each model dimension is processed concurrently.
+
+weight_gd:
+    Independence assumption: weight Gm = d by measurement errors.
+
+convtestval:
+    Convergence test value of Paige and Saunders (1982)
+
+    Paige, C. and Saunders, M., 1982,
+        LSQR: An Algorithm for Sparse Linear Equations and Sparse Least Squares,
+        ACM Trans. Math. Soft. 8, 43-71.
+
+            ||transpose(G) * d||
+    cvgtst = ----------------------
+                ||G|| * ||d||
+
+convergence_test:
+    Convergence/divergence is decided based on the Paige-Saunders convergence
+        test value and the history of model and data norms.
+
+readings:
+    Records starting index and number of phases in a reading.
+    A reading is defined as the entire set of phases/amplitudes reported
+    by an agency at a particular station for a particular event submitted
+    in a single report.
+    (e.g. Pg, Pn, Sn, AMB at ARCES reported by NORSAR for an event)
+
+na_parallel.c
+=============
+
+set_searchspace:
+    Sets NA search limits around initial hypocentre.
+
+na_search:
+    Neigbourhood Algorithm search to find a hypocentre guess for
+        the linearized inversion.
+
+    Sambridge, M., Geophysical inversion with a neighbourhood
+        algorithm. I. Searching the parameter space,
+        Geophys. J. Int., 138, 479-494, 1999.
+    Sambridge M. and B.L.N. Kennett, Seismic event location:
+        non-linear inversion using a neighbourhood algorithm,
+        Pageoph, 158, 241-257, 2001.
+
+    Main subroutine NA - sampling a parameter space using a Neighbourhood
+        algorithm, M. Sambridge, (RSES, ANU) Last revision Sept. 1999.
+    Transcripted to C by Istvan Bondar (ISC), March 2009
+        Several simplifications are made to the original code, such as
+            Monte Carlo option is no longer supported;
+            quasi-random sequences are always generated by Sobol's method;
+            NAD files are no longer supported;
+            simplified verbose/debugging.
+    Forward modeling:
+        uses all seismic (P and S-type) phases;
+        reidentifies phases w.r.t. each trial hypocentre;
+        when calculating the misfit of a trial hypocentre, adds a penalty
+            to the Lp-norm of residuals to prefer large ndef solutions to
+            local minima defined by just a few phases
+        to improve execution speed, accounting for correlated errors is
+            temporarily disabled if the number of seismic phases is larger
+            than 30 and dU (the deviation from an azimuthally uniformly
+            distributed station network) is smaller than 0.7.
+    If enabled, trial hypocentres are processed concurrently.
+
+initializations.c
+=================
+
+init_event:
+    Deals with depth_agency/location_agency/time_agency instructions.
+    If event identified as anthropogenic, fixes the depth to the surface,
+       unless the depth is being explicitly fixed to some depth.
+
+start_hyp:
+    Sets starting hypocentre to median of reported hypocentre parameters
+        if prime is not ISC or IASPEI or EHB
+
+init_sol:
+    Initializes solution structure with initial hypocentre guess.
+
+
+cluster.c
+=========
+
+HierarchicalCluster:
+    Determines the nearest-neighbour station order by performing
+        single-linkage hierarchical clustering on the station separations.
+    Based on the functions from The C clustering library.
+
+    de Hoon, M.J.L., S. Imoto, J. Nolan and S. Miyano, 2004,
+        Open source clustering software,
+        Bioinformatics, 20, 1453-1454.
+
+pslcluster:
+    The pslcluster routine performs single-linkage hierarchical clustering,
+        using the distance matrix. This implementation is based on the SLINK
+        algorithm, described in:
+
+    Sibson, R. (1973). SLINK: An optimally efficient algorithm for the
+        single-link cluster method. The Computer Journal, 16(1): 30-34.
+
+    The output of this algorithm is identical to conventional single-linkage
+        hierarchical clustering, but is much more memory-efficient and faster.
+        Hence, it can be applied to large data sets, for which the conventional
+        single-linkage algorithm fails due to lack of memory.
+
+TreeSort:
+    Sorts a tree according to linkage distances between nodes.
+
+nodecompare:
+    Compares two NODE records based on link distance.
+
+staordcompare:
+    Compares two STAORDER records based on link distance.
+
+
+data_covariance.c
+=================
+
+get_stalist:
+    Populates and sorts stalist array structure with distinct stations.
+
+starec_compare:
+    Compares two stalist records based on sta.
+
+distance_matrix:
+    Calculates station separations in km.
+
+get_sta_index:
+    Returns index of a station in the stalist array.
+
+sort_phaserec_nn:
+    Sort phase structures so that they ordered by staorder, rdid, time.
+    Ensures that phase records are ordered by the nearest-neighbour ordering,
+    thus block-diagonalizing the data covariance matrix
+
+data_covariance_matrix:
+    Constructs full data covariance matrix from variogram (model errors)
+    and prior phase variances (measurement errors).
+
+read_variogram:
+    Reads generic variogram from file and stores it in VARIOGRAM structure.
+
+free_variogram:
+    Frees memory allocated to VARIOGRAM structure.
+
+
+distaz.c
+========
+
+calc_delaz:
+    Calculates delta, esaz and seaz for each phase.
+
+distaz:
+    Computes the angular distance, azimuth and back azimuth between
+        two geographic latitude and longitude positions.
+
+deltaloc:
+    Calculates geographic latitude, longitude of a point which is
+        delta distance away in azimuth direction from a point on the Earth.
+
+
+gregion.c
+=========
+
+read_Flinn_Engdahl:
+    Reads Flinn-Engdahl regionalization file and stores it in FE structure.
+
+read_default_depth_region:
+    Reads geographic region number specific default depths from file.
+
+read_default_depth_grid:
+    Reads default depth grid from file.
+
+gregnum:
+    Returns Flinn-Engdahl geographic region number for a lat, lon pair.
+
+gregion:
+    Returns Flinn-Engdahl geographic region name for a geographic region number.
+
+gregtosreg:
+    Returns seismic region number for a geographic region number.
+
+sregion:
+    Returns seismic region name for a seismic region number.
+
+get_default_depth:
+    Returns the default depth for a lat, lon pair.
+    Default depth is set to the depth from the default depth grid if exists;
+    otherwise it is set to the median of reported depths if it is larger
+    than 100 km; else it is set to a depth assign to the Flinn-Engdahl
+    geographic region.
+
+default_depth_from_grid:
+    Default depth grid follows gridline registration, i.e. the nodes are
+    centered on the grid line intersections and the data points represent
+    the median value in a cell of dimensions (gres x gres) centered on the
+    nodes.
+
+        i-1 +--------+--------+--------+
+            |        |        |        |
+            |        |        |        |
+            |    #########    |        |
+            |    #   |   #    |        |
+        i   +----#---o---#----+--------+
+            |    #   |   #    |        |
+            |    #########    |        |
+            |        |        |        |
+            |        |        |        |
+        i+1 +--------+--------+--------+
+           j-1       j       j+1      j+2
+
+     Therefore, a point (lat,lon) falls in a grid cell if
+         (abs(lat - grid_lat) <= gres/2 && abs(lon - grid_lon) <= gres/2)
+
+
+phaseids_parallel.c
+===================
+
+id_pha:
+    Identifies phases with respect to a hypocentre.
+    Unless the phase_fixed flag is set in the association table,
+        maps reported phasenames to IASPEI standards.
+    Uses phase dependent information from <vmodel>_model.txt file.
+        phase_map - list of possible reported phases with their corresponding
+                IASPEI phase id
+    Sets unrecognized reported phase names to null.
+    Identifies phases within a reading and marks first-arriving S.
+    Sets time-defining flags and prior measurement errors.
+    Returns the number of time-defining phases.
+
+reidentify_pha:
+    Reidentifies phases after the NA search is completed.
+    Also executed if depth crosses Moho/Conrad discontinuity between
+    iterations.
+    At this point phase names are already mapped to IASPEI standards.
+    Sets time-defining flags and prior measurement errors.
+    Returns true if any of the phase names were changed.
+
+phaseid:
+    Identifies phases in a reading according to their time residuals.
+    At this point phase names are already mapped to IASPEI standards.
+    Uses phase dependent information from <vmodel>_model.txt file.
+        no_resid_phase - list of phases that don't get residuals, which
+            effectively prevents them to be used in the location (e.g.
+            amplitude phases)
+        allowable_phases - list of phases to which reported phases can be
+            renamed
+        allowable_first_P - list of phases to which reported first-arriving
+            P phases can be renamed
+        optional_first_P - additional list of phases to which reported
+            first-arriving P phases can be renamed
+        allowable_first_S - list of phases to which reported first-arriving
+            S phases can be renamed
+        optional_first_S - additional list of phases to which reported
+            first-arriving S phases can be renamed
+    Skips phases that do not get residuals.
+        The list of no-residual phases contains the list of phases for which
+        residuals will not be calculated, such as amplitude phases or IASPEI
+        phases for which no travel-time tables exist. These phases are not
+        used in the location.
+    Determines phase type. The phase type is defined by the first leg of the
+        phase id; for depth phases phase type is determined by the second
+        letter of the phase name. For instance, PKPdf, Pg, sP or pwP are P-type
+        phases.
+    Considers only P or S type phases.
+    Does not reidentify phases fixed by analyst (phase_fixed flag).
+    For exact duplicates (|dT| < 0.01) keeps the first non-null phaseid.
+    Checks if the reported phase is in the list of allowable phases.
+        The list of allowable phases were introduced to prevent the locator to
+        rename phases to unlikely 'exotic' phases, just because a travel-time
+        prediction fits better the observed travel-time. For instance, we do
+        not want to reidentify a reported Sn as SgSg, SPn or horribile dictu,
+        sSn. Recall that phases may suffer from picking errors or the observed
+        travel-times may reflect true 3D structures not modeled by the velocity
+        model. Introducing the list of allowable phases helps to maintain the
+        sanity of the bulletin and mitigates the risk of misidentifying phases.
+        However, if a reported phase is not in the list of allowable phases, it
+        is temporarily added to the list accepting the fact that station
+        operators may confidently pick later phases. In other words, exotic
+        phase names can appear in the final bulletin only if they were reported
+        as such.
+    Loops through the (possibly amended) list of allowable phases and
+        calculates the time residual.
+        Does not allow renaming a P-type phase to S-type, and vice versa.
+        Does not allow allow S(*) phases to be renamed to depth phases (s*).
+        Does not allow for repeating phaseids in a reading, i.e a phase name
+            can appear only once in a reading.
+        Further restrictions apply to first-arriving P and S phases.
+            First-arriving P and S phases can be identified as those in the list
+            of allowable first-arriving P and S phases. Occasionally a station
+            operator may not report the true first-arriving phase due to high
+            noise conditions. To account for this situation the list of optional
+            first-arriving P and S phases is also checked.
+        Keeps track of the phaseid with the smallest residual.
+    Sets the ISC phase id to the phase in the allowable phase list with the
+        smallest residual.
+    If no eligible phase is found, leaves the phase unidentified.
+    If enabled, readings are processed concurrently.
+
+isfirstP:
+    Checks if a phase is in the list of allowable or optional first-arriving P
+    phases.
+
+isfirstS:
+    Checks if a phase is in the list of allowable or optional first-arriving S
+    phases.
+
+setsigma:
+    Sets timedef flag and a priori estimate of measurement error for a phase.
+    Uses phase dependent information from <vmodel>_model.txt file.
+        phase_weight - list of a priori measurement errors within specified
+            delta ranges for IASPEI phases
+    Sets the time defining flag to true if a valid entry is found in the
+        phase_weight table.
+    Makes the phase non-defining if its residual is larger than
+        sigmathres times the prior measurement error,
+        or it was explicitly set to non-defining by an analyst.
+    Only phases with timedef = 1 are used in the location.
+
+mark_duplicates:
+    Once the phases are identified in each reading, it checks for duplicates
+        reported by various agencies at the same station.
+    To account for alternative station codes it uses the primary station code.
+    Considers time-defining phases only.
+    Arrival picks are considered duplicate if they are reported at the same
+        site for the same event and if they arrival time is within 0.1 seconds.
+        For duplicates the arrival time is taken as the mean of the arrival
+        time, and the phase id is forced to be the same.
+    If accounting for correlated errors is turned off, duplicates are
+        explicitly down-weighted. If correlated errors are accounted for,
+        downweighting is not necessary as duplicates are simply projected to
+        the null space.
+    Collects indices of time-defining phases at a site and calls same_sta.
+
+same_sta:
+    Collects indices of time-defining phases at a site arriving at the same
+        time (within 0.1s tolerance) and calls same_time.
+    Downweights duplicates if accounting for correlated errors is turned off.
+
+same_time:
+    Sets the arrival time of duplicates to the mean reported arrival time, and
+        if there are more than one phase names, sets the phase id of all
+        duplicates to the one with the smallest residual.
+
+id_pfake:
+    PFAKE is used by the NEIC to associate a fake phase name to amplitude
+        measurements. PFAKE is not used in locations, but residuals may be
+        useful for the editors to decide whether the amplitude is correctly
+        associated to an event.
+    Uses phase dependent information from <vmodel>_model.txt file.
+       allowable_first_P - list of phases to which reported first-arriving
+            P phases can be renamed
+
+reported_phase_resid:
+    Tries to get a residual for a phase that was set to null due to a
+        large residual. Uses the reported phase name this time.
+    Uses phase dependent information from <vmodel>_model.txt file.
+        phase_map - list of possible reported phases with their
+            corresponding IASPEI phase id.
+    Only used once the locator is finished. It is intended to give a
+        hint to the analyst about the nature of the outlier.
+
+
+depth_phases.c
+==============
+
+depth_resolution:
+    Decides if there is sufficient depth resolution for a free depth solution.
+    We have depth resolution if
+        has depth resolution from depth phases (see depth_phase_check)
+        OR
+        nlocal >= minlocalsta
+        OR
+        nsdef >= min_s_p
+        OR
+        (ncoredef >= min_corepha AND nagent >= ndepagency)
+    For any of these cases a defining first-arriving P in the reading is
+        required.
+
+depth_phase_check:
+    Decides whether depth phases provide depth resolution.
+    Flags first-arriving defining P for a reading.
+    Makes note of P - depth phase pairs.
+    Makes orphan depth phases non-defining.
+
+depth_phase_stack:
+    Calculates depth-phase depth using the depth phase stacking method.
+
+    Murphy J.R. and B.W. Barker, 2006,
+        Improved focal-depth determination through automated identification
+        of the seismic depth phases pP and sP,
+        Bull. Seism. Soc. Am., 96, 1213-1229.
+
+    Builds station traces with 1 km steps in depth.
+    A station trace maps moveout times to depth for a given delta.
+    A boxcar function is placed in the station trace at the depth
+        corresponding to the observed moveout.
+    The station traces then stacked across the network.
+    The depth-phase depth is identified as the median of the stack.
+
+phase_tt:
+    Calculates TT(h) vector for a given delta and phase.
+
+stacker:
+    Calculates station traces h(TT) and stacks them
+
+sta_trace:
+    Calculates station trace (h(TT)) vector for a given
+        moveout time with deltim tolerance.
+
+
+traveltimes_parallel.c
+======================
+
+read_tt_tables:
+    Reads travel-time tables from files.
+    The list and number of phases for which TT tables may be read
+        is given by phaseTT_num and the phaseTT array specified in iscloc.h.
+
+free_tt_tbl:
+    Frees memory allocated to TT_TABLE structure.
+
+read_etopo1:
+    Reads ETOPO1 topography file and store it in global topo array
+    ETOPO1:
+        etopo1_bed_g_i2.bin
+
+        Amante, C. and B. W. Eakins,
+            ETOPO1 1 Arc-Minute Global Relief Model: Procedures, Data Sources
+            and Analysis.
+            NOAA Technical Memorandum NESDIS NGDC-24, 19 pp, March 2009.
+
+        NCOLS         21601
+        NROWS         10801
+        XLLCENTER     -180.000000
+        YLLCENTER     -90.000000
+        CELLSIZE      0.01666666667
+        NODATA_VALUE  -32768
+        BYTEORDER     LSBFIRST
+        NUMBERTYPE    2_BYTE_INTEGER
+        ZUNITS        METERS
+        MIN_VALUE     -10898
+        MAX_VALUE     8271
+        1'x1' resolution, 21601 lons, 10801 lats
+    Resampled ETOPO1 versions:
+        etopo2_bed_g_i2.bin
+          grdfilter -I2m etopo1_bed.grd -Fg10 -D4 -Getopo2_bed.grd
+            Gridline node registration used
+            x_min: -180 x_max: 180 x_inc: 0.0333333 name: nx: 10801
+            y_min: -90 y_max: 90 y_inc: 0.0333333 name: ny: 5401
+            z_min: -10648.7 z_max: 7399.13 name: m
+            scale_factor: 1 add_offset: 0
+        etopo5_bed_g_i2.bin
+          grdfilter -I5m etopo1_bed.grd -Fg15 -D4 -Getopo5_bed.grd
+            Gridline node registration used
+            x_min: -180 x_max: 180 x_inc: 0.0833333 nx: 4321
+            y_min: -90 y_max: 90 y_inc: 0.0833333 ny: 2161
+            z_min: -10515.5 z_max: 6917.75 name: m
+            scale_factor: 1 add_offset: 0
+    ETOPO parameters are specified in config.txt file.
+        etopofile - pathname for ETOPO file
+        etoponlon - number of longitude samples in ETOPO
+        etoponlat - number of latitude samples in ETOPO
+        etopores  - cellsize in ETOPO
+
+find_etopo1:
+    Returns ETOPO1 topography in kilometers for a lat, lon pair.
+    ETOPO parameters are specified in config.txt file.
+        etopofile - pathname for ETOPO file
+        etoponlon - number of longitude samples in ETOPO
+        etoponlat - number of latitude samples in ETOPO
+        etopores  - cellsize in ETOPO
+
+get_phase_index:
+    Returns index of tt_table struct array for a given phase.
+
+get_tt:
+    Returns TT table values for a given phase, depth and delta.
+    Bicubic spline interpolation is used to get interpolated values.
+    Horizontal and vertical slownesses are calculated if requested.
+    Bounce point distance is calculated for depth phases.
+
+calc_resid:
+    Calculates time residuals.
+    Uses phase dependent information from <vmodel>_model.txt file.
+        no_resid_phase - list of phases that don't get residuals, i.e.
+                never used in the location (e.g. amplitude phases)
+    If mode is et to 'all' it attempts to get time residuals for all
+        associated phases (final call),
+    otherwise considers only time-defining phases.
+
+read_ttime:
+    Returns the travel-time prediction with elevation, ellipticity and
+        optional bounce-point corrections for a phase.
+    Horizontal and vertical slownesses are calculated if requested.
+    The first two indices (0 and 1) in the TT table structures are
+        reserved for the composite first-arriving P and S TT tables.
+        The isfirst flags controls the use of these tables.
+        1: in this case the phaseids are ignored and read_ttime returns
+           the TT for the first-arriving P or S (never actually used);
+        0: phaseids are respected, but first_arriving P or S tables can
+           be used to get a valid TT table value at local/regional crossover
+           distances without reidentifying the phase during the subsequent
+           iterations of the location algorithm;
+       -1: do not use them at all (the behaviour in phase id routines).
+
+correct_time:
+    Applies travel-time corrections to a predicted TT table value.
+    Approximate geoid correction is calculated for Jeffreys-Bullen;
+    otherwise the ak135 (Kennett and Gudmundsson, 1996) ellipticity
+        correction is used.
+    Bounce point correction is applied for depth phases, and for pwP,
+        water depth correction is also calculated.
+
+get_bounce_corr:
+    Returns the correction for topography/bathymetry at the bounce point
+        for a depth phase, as well as the water depth correction for pwP.
+    Adopted from Bob Engdahl's libtau extensions.
+
+topcor:
+    Calculates bounce point correction for depth phases.
+    Calculates water depth correction for pwP if water column > 1.5 km.
+    Uses Bob Engdahl's topography equations.
+
+get_elev_corr:
+    Calculates elevation correction for a station.
+
+last_lag:
+    Finds last lag of phase (P or S-type)
+
+calc_geoid_corr:
+    Calculates travel time correction for height above geoid.
+    Approximate ellipticity correction for JB; legacy code.
+
+
+calc_ellipticity_corr.c
+=======================
+
+get_ellip_corr:
+    Calculates ellipticity correction for a phase.
+
+    Dziewonski, A.M. and F. Gilbert, 1976,
+        The effect of small, aspherical perturbations on travel times
+        and a re-examination of the correction for ellipticity,
+        Geophys., J. R. Astr. Soc., 44, 7-17.
+    Kennett, B.L.N. and O. Gudmundsson, 1996,
+        Ellipticity corrections for seismic phases,
+        Geophys. J. Int., 127, 40-48.
+
+    The routine uses the Dziewonski and Gilbert (1976) representation.
+    The code is based on Brian Kennett's ellip.f (Kennett and Gudmundsson,
+        1996).
+    The ellipticity corrections are found by linear interpolation
+        in terms of values calculated for the ak135 model for a wide
+        range of phases to match the output of the libtau software.
+
+read_elcor_tbl:
+    Reads ak135 ellipticity correction coefficients file
+        and stores it in EC structure.
+
+    Kennett, B.L.N. and O. Gudmundsson, 1996,
+        Ellipticity corrections for seismic phases,
+        Geophys. J. Int., 127, 40-48.
+
+    The tau corrections are stored at 5 degree intervals in distance
+        and at the depths of 0, 100, 200, 300, 500, 700 km.
+
+free_elcor_tbl:
+    Frees memory allocated to ec_coef structure.
+
+
+interpolate.c
+=============
+
+spline:
+    Calculates interpolating coefficients for a natural spline.
+
+spline_int:
+    Returns interpolated function value f(xp) by cubic spline interpolation.
+
+bilinear_int:
+    Returns interpolated function value f(xp1,xp2) by bilinear interpolation.
+
+bracket:
+    For a vector x, ordered in ascending order, return indices jlo and jhi
+        such that x[jlo] <= xp < x[jhi].
+
+ibracket:
+    For a vector x, ordered in ascending order, return indices jlo and jhi
+        such that x[jlo] <= xp < x[jhi].
+
+
+svd_parallel.c
+==============
+
+eigen_decompose:
+    Calculate the eigenvalues and eigenvectors of an (NxN) symmetric matrix.
+        A = U * SV * transpose(U)
+    The A matrix has to be in Fortran vector format (column order).
+    Uses the Lapack dsyevr routine to obtain the eigenvalue decomposition
+        of the symmetric, positive semi-definite covariance matrix.
+
+projection_matrix:
+    Projection matrix to project Gm = d into eigen system: WGm = Wd.
+    W(N x N) = 1 / sqrt(SV) * transpose(U) = Binv
+           B = U * sqrt(SV)
+           C = B * transpose(B) = U * SV * transpose(V)
+        Cinv = transpose(W) * W = V * 1/SV * transpose(U)
+
+    Bondár, I., and K. McLaughlin, 2009,
+        Seismic location bias and uncertainty in the presence of correlated
+            and non-Gaussian travel-time errors,
+        Bull. Seism. Soc. Am., 99, 172-193.
+    Bondár, I., and D. Storchak, 2011,
+        Improved location procedures at the International Seismological Centre,
+        Geophys. J. Int., doi: 10.1111/j.1365-246X.2011.05107.x.
+
+    Since different phases travel along different ray paths,
+        they are uncorrelated. This makes the data covariance matrix
+        block-diagonal (when ordered by phases). Furthermore, if the
+        observations are ordered by the nearest-neighbour station order
+        the phase blocks themselves exhibit a block-diagonal structure.
+    To improve efficiency and speed, the data covariance matrix is inverted
+        block by block instead of doing one monster inversion.
+    Uses Lapack routines to obtain the eigenvalue decomposition
+        of the symmetric, positive semi-definite covariance matrix.
+    If enabled, each block is processed concurrently.
+
+svd_decompose:
+    Singular value decomposition of an (NxM) matrix.
+    A = U * SV * transpose(V)
+
+svd_reorder:
+    Descending order of singular values and corresponding U and V matrices.
+
+svd_solve:
+    Solves Ax = b for a vector x, where A = U * W * transpose(V)
+        as returned by svd_decompose and svd_reorder. N >= M is assumed.
+    No input quantities are destroyed, so the routine may be called
+        sequentially with different b's.
+
+svd_model_covariance_matrix:
+    Calculates a posteriori model covariance matrix
+    ModCov(M x M) = V * (1 / SV^2) * transpose(V)
+                  = Ginv * DataCov * transpose(Ginv)
+             Ginv = V * 1/SV * transpose(U)
+
+svd_threshold:
+    Get default threshold to zero out singular values
+
+svd_rank:
+    Rank of A(N x M) after zeroing out singular values less than a threshold
+
+svd_norm:
+    Condition number and G matrix norm
+
+
+calc_uncertainty.c
+==================
+
+calc_error:
+    Calculates nass, nreading, ndefsta, sdobs.
+        nass     = the number of associated phases
+        ndefsta  = the number of time defining stations
+        nreading = the number of readings
+        sdobs    = sqrt(sum of squares of UNweighted residuals / (N - M))
+    Calculates formal uncertainty estimates scaled to a confidence level
+
+        Jordan T.H. and K.A. Sverdrup, 1981,
+            Teleseismic location techniques and their application
+            to earthquake clusters in the South-Central Pacific,
+            Bull. Seism. Soc. Am., 71, 1105-1130.
+
+Ftest:
+    Critical value of F distribution with M, N degrees of freedom.
+        Prob[F >= F(M,N)] = 1 - conf
+    The critical values for the F distribution are listed in
+
+        D. Zwillinger and S. Kokoska, 2000,
+            CRC Standard Probability and Statistics Tables and Formulae,
+            Chapman and Hall/CRC.
+
+
+loc_qual.c
+==========
+
+location_quality:
+    Calculates network geometry based location quality metrics
+        gap, sgap and dU for local, near-regional, teleseismic
+        distance ranges and the entire network.
+    Local network:  0 - 150 km
+    Near regional:  3 - 10 degrees
+    Teleseismic:   28 - 180 degrees
+    Entire network: 0 - 180 degrees
+    Only defining stations are considered.
+    dU is defined in:
+
+        Bondár, I. and K. McLaughlin, 2009,
+            A new ground truth data set for seismic studies,
+            Seism. Res. Let., 80, 465-472.
+
+    sgap is defined in:
+
+        Bondár, I., S.C. Myers, E.R. Engdahl and E.A. Bergman, 2004,
+            Epicenter accuracy based on seismic network criteria,
+            Geophys. J. Int., 156, 483-496,
+            doi: 10.1111/j.1365-246X.2004.02070.x.
+
+gapper:
+    Calculates gap, sgap and dU.
+
+
+print_event.c
+=============
+
+print_sol:
+    Prints current solution to the logfile
+
+print_sol:
+    Prints hypocentres for an event to the logfile
+
+print_pha:
+    Prints a table with all the phases for one event.
+
+print_defining_pha:
+    Prints a table with all the time-defining phases for one event
+
+
+timefuncs.c
+===========
+
+epoch_time:
+    Converts human time to epoch time.
+
+human_time:
+    Converts epoch time to human time.
+    Handles negative epoch times.
+
+secs:
+    Returns elapsed time since t0 in seconds.
+
+read_time:
+    Converts time from database format string to seconds since epoch.
+
+
+magnitude.c
+===========
+
+calc_netmag:
+    Calculates network MS and mb.
+    MS is calculated for shallow events only.
+
+netmag:
+    Calculates network magnitude.
+    At least three station magnitudes are required for a network magnitude.
+    The network magnitude (mb or MS) is defined as the median of the
+        station magnitudes.
+    The network magnitude uncertainty is defined as the SMAD of the
+        alpha-trimmed station magnitudes.
+    The station magnitude is defined as the median of reading magnitudes
+        for a station.
+    The reading magnitude is defined as the magnitude computed from the
+        maximal log(A/T) in a reading.
+    Amplitude magnitudes are calculated for each reported amplitude, period
+        pair.
+
+stamag_compare:
+    Compares two station magnitude records based on the magnitude.
+
+rdmag_compare:
+    Compares two reading magnitude records based on the magnitude.
+
+calc_sta_mb:
+    Calculates mb for a single reading.
+    Finds the reported amplitude, period pair for which A/T is maximal.
+        Amplitude mb = log(A/T) + Q(d,h)
+        Reading   mb = log(max(A/T)) + Q(d,h)
+    If no amplitude, period pairs are reported, uses the reported logat values.
+        Amplitude mb = logat + Q(d,h)
+        Reading   mb = max(logat) + Q(d,h)
+
+get_magQ:
+    Calculates magnitude attenuation Q(d,h) value.
+
+    Gutenberg, B. and C.F. Richter, 1956,
+        Magnitude and energy of earthquakes,
+        Ann. Geof., 9, 1-5.
+    Veith, K.F. and G.E. Clawson, 1972,
+        Magnitude from short-period P-wave data,
+        Bull. Seism. Soc. Am., 62, 2, 435-452.
+
+    For the Gutenberg-Richter tables amplitudes are measured in micrometers
+        Q(d,h) = QGR(d,h) - 3
+    For the Veith-Clawson tables amplitudes are measured in nanometers
+        Q(d,h) = QVC(d,h) - 3
+
+calc_sta_ms:
+    Calculates MS for a single reading.
+
+    Vanek, J., A. Zatopek, V. Karnik, N.V. Kondorskaya, Y.V. Riznichenko,
+        Y.F. Savarensky, S.L. Solovev and N.V. Shebalin, 1962,
+        Standardization of magnitude scales,
+        Bull. (Izvest.) Acad. Sci. USSR Geophys. Ser., 2, 108-111.
+
+    Amplitude MS = log(A/T) + 1.66 * log(d) + 0.3 (Prague formula)
+    First, find max(A/T) for Z component
+        MS_Z = log(max(A_z/T_z)) + 1.66 * log(d) + 0.3
+    Second, find max(A/T) for E and N components within +/- 5s from Z period
+        MS_E = log(max(A_e/T_e)) + 1.66 * log(d) + 0.3
+        MS_N = log(max(A_n/T_n)) + 1.66 * log(d) + 0.3
+    Horizontal MS
+        MS_H = sqrt(MS_E^2 + MS_N^2) if MS_E and MS_N exist
+        MS_H = sqrt(2 * MS_E^2)      if MS_N does not exist
+        MS_H = sqrt(2 * MS_N^2)      if MS_E does not exist
+    Reading MS
+        MS = (MS_H + MS_Z) / 2  if MS_Z and MS_H exist
+        MS = MS_H               if MS_Z does not exist
+        MS = MS_Z               if MS_H does not exist
+
+read_magQ:
+    Reads magnitude attenuation Q(d,h) table from file.
+
+
+read_db.c:
+==========
+
+get_data:
+    Reads hypocentre, phase and amplitude data from database.
+    Allocates memory for the arrays of structures needed.
+
+get_event:
+    Gets prime, event type, number of hypocenters, phases, readings, stations
+    and reporting agencies for an event from DB.
+
+get_hyp:
+    Reads reported hypocentres for an event from DB.
+        Fields from the hypocenter table:
+           hypid
+           day, msec (origin epoch time)
+           lat, lon
+           depth (depdp if depth is null)
+           depfix, epifix, timfix
+           nsta, ndefsta, nass, ndef
+           mindist, maxdist, azimgap
+           author
+       Fields from the hypoc_err table:
+           hypid
+           sminax, smajax, strike
+           stime, sdepth
+           sdobs
+       Fields from the hypoc_acc table:
+           hypid
+           score
+    Sorts hypocentres by score, the first being the prime hypocentre.
+
+get_pha:
+    Reads phase, amplitude, and reporter association data for an event from DB.
+    Performs three seperate queries as phases may or may not be associated
+        by their reporter and may or may not have one or more amplitudes.
+    Reads phases ISC associated to the prime hypocentre
+        Fields from the association, phase, site and reporter tables:
+            phase.phid
+            phase.rdid
+            phase.day, phase.msec (arrival epoch time)
+            phase.phase (reported phase)
+            phase.sta
+            phase.slow, phase.azim
+            phase.chan, phase.sp_fm, phase.emergent, phase.impulsive
+            association.reporter (reporter id)
+            association.phase_fixed
+            site.lat, site.lon, site.elev
+            site.prista (site.sta if prista is null)
+            reporter.reporter (reporting agency)
+            association.delta
+            association.phase (ISC phase)
+            association.nondef
+    Reads reported associations for any of the phases selected above.
+        Replaces reported phase name with the reported association if it was
+        reidentified by NEIC, CSEM, EHB or IASPEI.
+    Reads amplitudes associated to the prime hypocentre.
+        Fields from the amplitude table:
+            phid
+            amp, per
+            logat
+            amptype
+            chan
+            ampid
+    Sorts phase structures so that they ordered by delta, prista, rdid, time.
+        Uses prista rather than sta so that duplicates weighted properly.
+    Marks initial arrivals in readings.
+
+sort_phaserec_db:
+    Sorts phase structures so that they ordered by delta, prista, rdid, time.
+
+
+write_db.c
+==========
+
+put_data:
+    Writes solution to database.
+    Removes old ISC solution if any, and populates hypocenter table.
+    Populates or updates event table if necessary.
+    Populates hypoc_err, hypoc_acc and network_quality tables.
+    Deletes previous ISC associations and populates association table.
+    Populates netmag, stamag, rdmag, ampmag and ms_zh tables.
+
+update_event:
+    Updates prime_hyp in the event table.
+    Only called if the ISC hypocentre is new.
+
+put_event:
+    Populates event table in outdb if event is not yet there.
+
+put_hypocenter:
+    Populates hypocenter table.
+    Gets a new hypid if previous prime was not ISC.
+    Deletes previous prime if it was ISC.
+    Sets depfix flag:
+        null: Free-depth solution
+           A: Depth fixed by ISC Analyst
+           S: Anthropogenic event; depth fixed to surface
+           G: Depth fixed to ISC default depth grid
+           R: Depth fixed to ISC default region depth
+           M: Depth fixed to median depth of reported hypocentres
+           B: Beyond depth limits; depth fixed to 0/600 km
+           H: Depth fixed to depth of a reported hypocentre
+           D: Depth fixed to depth-phase depth
+
+put_hypoc_err:
+    Populates hypoc_err table.
+
+put_hypoc_acc:
+    Populates hypoc_acc and network_quality tables.
+
+put_netmag:
+    Populates netmag table.
+
+put_stamag:
+    Populates stamag table.
+    Deletes previous ISC stamag entries.
+    Station magnitudes are written to the stamag table even if no network
+        magnitude is calculated. In that case the magid field is set to null.
+
+put_rdmag:
+    Populates readingmag table.
+    Deletes previous ISC readingmag entries.
+    Reading magnitudes are written to the readingmag table even if no network
+        magnitude is calculated. In that case the magid field is set to null.
+
+delete_assoc:
+    Deletes previous ISC association records.
+
+put_assoc:
+    Populates association table.
+
+put_ampmag:
+    Populates ampmag table.
+    Deletes previous ampmag entries.
+    Amplitude magnitudes are written to the ampmag table even if no network
+        magnitude is calculated.
+
+put_ms_zh:
+    Populates ms_zh table.
+    Deletes previous ampmag entries.
+    MS_Z, MS_H magnitudes are written to the ms_zh table even if no network
+        MS magnitude is calculated.
+
+remove_isc:
+    Removes existing ISC hypocentre from database if locator failed to get
+        a convergent solution.
+
+delete_isc_hypid:
+    Removes previous ISC hypocentre from database.
+
+replace_prime:
+    Changes prime hypocentre of event without removing old one.
+
+replace_assoc:
+    Rolls back associations to previous prime.
+
+get_id:
+    Gets next unique id from DB sequence in the <nextid_db> account.
+
+
+isf.c
+=====
+
+read_isf:
+    Reads next event from an ISF bulletin format file.
+    Assumes that the prime hypocentre is the last one in the origin block.
+
+write_isf
+    Writes solution to ISF bulletin format file.
+
+read_stafile:
+    Reads stations from ISF stafile into an array.
+
+sort_phaserec_isf:
+    Sort phase structures by increasing delta, sta, time.
+
+parse_event_id:
+    Parses an event title line.
+
+parse_origin:
+    Parses an origin line.
+
+parse_phase:
+    Parses a phase block data line.
+
+write_origin
+    Writes an origin line.
+
+write_phase
+    Writes a phase block data line.
+
+partline
+    Gets a substring, removing leading and trailing white space.
+
+check_whole
+    Check that a string has no spaces in it.
+
+all_blank
+    Check if a string is composed entirely of white space or not.
+
+check_int
+    Check that a string contains only sign/number characters.
+
+check_float
+    Check that a string contains only sign/number/decimal point characters.
+
+
+utils.c
+=======
+
+skipcomments:
+    Skips comment lines in file. A comment line starts with #.
+
+rtrim:
+    Cuts trailing spaces from string.
+
+dropspace:
+    Removes extra white space characters from string.
+
+Free:
+    Frees memory.
+
+alloc_matrix:
+    Allocates memory to a double matrix.
+
+free_matrix:
+    Frees memory allocated to a double matrix.
+
+alloc_imatrix:
+    Allocates memory to a short integer matrix.
+
+free_imatrix:
+    Frees memory allocated to a short integer matrix.
+
+int_compare:
+    Compares two integers.
+
+double_compare:
+    Compares two doubles.
+
+
+pgsql_funcs.c
+=============
+
+pgsql_error:
+    Prints SQL error message
+
+pgsql_conn:
+    Connects to Postgres DB
+
+pgsql_disconn:
+    Disconnects from Postgres DB
+
+
