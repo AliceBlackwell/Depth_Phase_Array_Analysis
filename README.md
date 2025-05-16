@@ -18,8 +18,8 @@ This project automates the following:
 Clone the repository:
 
 ```bash
-git clone https://github.com/AliceBlackwell/depth-phase-array-analysis.git
-cd depth-phase-array-analysis
+git clone https://github.com/AliceBlackwell/Depth_Phase_Array_Analysis.git
+cd Depth_Phase_Array_Analysis
 
 conda create -n dpa-env python=3.10.11
 conda activate dpa-env
