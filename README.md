@@ -24,6 +24,9 @@ cd Depth_Phase_Array_Analysis
 conda create -n dpa-env python=3.10.11
 conda activate dpa-env
 pip install -r requirements.txt
+
+# Compile ISCLoc, navigate to ISClocRelease2.2.6/src2.2.7
+./compile_iscloc.sh
 ```
 
 ## 🚀 Usage
