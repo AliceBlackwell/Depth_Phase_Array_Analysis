@@ -34,7 +34,7 @@ Compile ISCLoc (including changing the Makefile to point towards conda packages)
 
 ```bash
 cd ISClocRelease2.2.6/src2.2.7
-./compile_iscloc.sh
+source compile_iscloc.sh
 ```
 
 ## 🚀 Usage
