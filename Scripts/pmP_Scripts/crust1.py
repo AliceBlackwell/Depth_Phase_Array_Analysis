@@ -1,6 +1,6 @@
 import numpy as np
 from math import floor
-
+import os
 
 class crustModel:
     """
@@ -28,10 +28,10 @@ class crustModel:
     def __init__(self):
         # Read in data files
         cur_dir = os.getcwd()
-        self.vp = np.loadtxt(cur_dir+'/Velocity_model_files/Crust1.0/model/crust1.vp')
-        self.vs = np.loadtxt(cur_dir+'/Velocity_model_files/Crust1.0/model/crust1.vs')
-        self.rho = np.loadtxt(cur_dir+'/Velocity_model_files/Crust1.0/model/crust1.rho')
-        self.bnds = np.loadtxt(cur_dir+'/Velocity_model_files/Crust1.0/model/crust1.bnds')
+        self.vp = np.loadtxt(cur_dir+'/pmP_Scripts/Velocity_model_files/Crust1.0/model/crust1.vp')
+        self.vs = np.loadtxt(cur_dir+'/pmP_Scripts/Velocity_model_files/Crust1.0/model/crust1.vs')
+        self.rho = np.loadtxt(cur_dir+'/pmP_Scripts/Velocity_model_files/Crust1.0/model/crust1.rho')
+        self.bnds = np.loadtxt(cur_dir+'/pmP_Scripts/Velocity_model_files/Crust1.0/model/crust1.bnds')
 
         # Reshape to a lon,lat,layer grid. The 0,0 index value
         # is at 90 south and 180 latitude.

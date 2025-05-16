@@ -221,7 +221,9 @@ def run_array_processing(catalogue, event, results_dir, data_dir, component, do_
             
         except Exception as e:
             print(e)
-            f = open('Failed_events.txt', 'a+')
+            txt_file_name = 'Failed_Events_from_Array_Processing.txt'
+            failed_txt = os.path.join(results_parent_dir, txt_file_name)
+            f = open(failed_txt, 'a+')
             f.write(str(event.evname) + '\t' + str(event.event_id) + '\t' + str('No Pre-Loaded and Processed Data available') + '\t' + 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno) + '\n')
             f.close()
             raise Exception('No Pre-Loaded and Processed Data available')
@@ -254,7 +256,7 @@ def run_array_processing(catalogue, event, results_dir, data_dir, component, do_
             print('Event %s can not be processed' %event.evname)
             print(e)
             print('Arrays could not be created')
-            txt_file_name = 'Failed_Events.txt'
+            txt_file_name = 'Failed_Events_from_Array_Processing.txt'
             failed_txt = os.path.join(results_parent_dir, txt_file_name)
             f = open(failed_txt, 'a+')
             f.write(str(event.evname) + '\t' + 'Arrays could not be created' + '\t' + str(e) + '\n')
@@ -264,7 +266,7 @@ def run_array_processing(catalogue, event, results_dir, data_dir, component, do_
         if array_stream_Z == 0:
             print('Event %s can not be processed' %event.evname)
             print('Arrays could not be created, station distribution inappropiate')
-            txt_file_name = 'Failed_Events.txt'
+            txt_file_name = 'Failed_Events_from_Array_Processing.txt'
             failed_txt = os.path.join(results_parent_dir, txt_file_name)
             f = open(failed_txt, 'a+')
             f.write(str(event.evname) + '\t' + 'Arrays could not be created, station distribution inappropiate' + '\n')
@@ -348,7 +350,7 @@ def run_array_processing(catalogue, event, results_dir, data_dir, component, do_
             print('Event %s can not be processed' %event.evname)
             print(e)
             print('Array processing set-up failed')
-            txt_file_name = 'Failed_Events.txt'
+            txt_file_name = 'Failed_Events_from_Array_Processing.txt'
             failed_txt = os.path.join(results_parent_dir, txt_file_name)
             f = open(failed_txt, 'a+')
             f.write(str(event.evname) + '\t' + 'Array processing set-up failed' + '\t' + str(e) + '\n')
@@ -503,7 +505,7 @@ def run_array_processing(catalogue, event, results_dir, data_dir, component, do_
                 f.write('Array ' + str(sta_name)+str(a) + ' failed, corresponding error: ' + str(e)+ ' Error on line {}'.format(sys.exc_info()[-1].tb_lineno) + '\n')
                 f.close()
                 if failed_percentage > 50:
-                    txt_file_name = 'Failed_Events.txt'
+                    txt_file_name = 'Failed_Events_from_Array_Processing.txt'
                     failed_txt = os.path.join(results_parent_dir, txt_file_name)
                     f = open(failed_txt, 'a+')
                     f.write('No. of failed arrays = ' + str(failed_counter) + '\n')
@@ -525,7 +527,7 @@ def run_array_processing(catalogue, event, results_dir, data_dir, component, do_
             print('Event %s can not be processed' %event.evname)
             print(e)
             print('Array saving failed')
-            txt_file_name = 'Failed_Events.txt'
+            txt_file_name = 'Failed_Events_from_Array_Processing.txt'
             failed_txt = os.path.join(results_parent_dir, txt_file_name)
             f = open(failed_txt, 'a+')
             f.write(str(event.evname) + '\t' + 'Array saving failed' + '\t' + str(e) + '\n')
@@ -702,7 +704,9 @@ def run_array_processing(catalogue, event, results_dir, data_dir, component, do_
 
             if sta.size == 0:
                 print('No outputs for %s' %event.event_id)
-                f = open('Failed_ISCloc_ISF_events.txt', 'a+')
+                txt_file_name = 'Failed_ISCloc_ISF_events.txt'
+                txt = os.path.join(results_parent_dir, txt_file_name)
+                f = open(txt, 'a+')
                 f.write(str(event) + '\t' + str(event.event_id) + '\n')
                 f.close()
                 
@@ -718,7 +722,7 @@ def run_array_processing(catalogue, event, results_dir, data_dir, component, do_
             #sys.exit()
             print('No outputs for %s' %event.event_id)
             print(str(event.evname) + '\t' + str(event.event_id) + '\t' + str(e) + '\t' + 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno) + '\n')
-            txt_file_name = 'Failed_Events.txt'
+            txt_file_name = 'Failed_Events_from_Array_Processing.txt'
             failed_txt = os.path.join(results_parent_dir, txt_file_name)
             f = open(failed_txt, 'a+')
             f.write(str(event.evname) + '\t' + str(event.event_id) + '\t' + str(e) + '\t' + 'Error on line {}'.format(sys.exc_info()[-1].tb_lineno) + '\n')

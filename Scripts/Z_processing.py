@@ -305,19 +305,7 @@ def import_process_data(catalogue, re_processing, data_dir, parent_dir):
             directory = 'ISC_Unpro_DATA'
             unpro_data = os.path.join(parent_dir, directory)
             #unpro_data = '/nobackup/ee18ab/10_Peruvian_data'
-            pass'''
-        
-        un_pro_ev_dir = data_dir + '/' + evname_obspyDMT + '.a'
-        if os.path.isdir(un_pro_ev_dir) == True:
-            pass
-        else:
-            txt_file_name = 'Events_with_no_data.txt'
-            outputs_txt = os.path.join('.', txt_file_name)
-            f = open(outputs_txt, 'a+')
-            f.write(str(evname_obspyDMT) + '\n')
-            f.close()
-            print('NO PRE-LOADED DATA')
-            return    
+            pass'''   
             
         try:
             directory = 'Processed_DATA'
@@ -329,6 +317,18 @@ def import_process_data(catalogue, re_processing, data_dir, parent_dir):
             directory = 'Processed_DATA'
             pro_data = os.path.join(parent_dir, directory)
             pass
+            
+        un_pro_ev_dir = data_dir + '/' + evname_obspyDMT + '.a'
+        if os.path.isdir(un_pro_ev_dir) == True:
+            pass
+        else:
+            txt_file_name = 'Events_with_no_data.txt'
+            outputs_txt = os.path.join(pro_data, txt_file_name)
+            f = open(outputs_txt, 'a+')
+            f.write(str(evname_obspyDMT) + '\n')
+            f.close()
+            print('NO PRE-LOADED DATA')
+            return
         
         '''try:    
             directory = '%s' %evname
@@ -614,8 +614,8 @@ def import_process_data(catalogue, re_processing, data_dir, parent_dir):
     except Exception as e:
         print('Data for event %s failed to download/be processed' %evname_obspyDMT)
         print(e)
-        txt_file_name = 'Failed_Events_from_1.txt'
-        outputs_txt = os.path.join('.', txt_file_name)
+        txt_file_name = 'Failed_Events_from_Z_Processing.txt'
+        outputs_txt = os.path.join(pro_data, txt_file_name)
         
         f = open(outputs_txt, 'a+')
         f.write(str(evname_obspyDMT) + '\t' + str(e) + '\n')

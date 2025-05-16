@@ -52,7 +52,7 @@ import classes
 
 #------------------------------------------------------------------------------
 
-def determine_crustal_thickness(catalogue, event, gen_dir, res_dir, final_EQ_cat_txt, reprocess, make_figures, plot_velocity_models, include_sea):
+def determine_crustal_thickness(catalogue, event, gen_dir, res_dir, reprocess, make_figures, plot_velocity_models, include_sea, final_EQ_cat_txt=False, depth=False):
 
     # Load in event data
     input_no = event
@@ -126,18 +126,24 @@ def determine_crustal_thickness(catalogue, event, gen_dir, res_dir, final_EQ_cat
                     pass
 
                 # Load in event depth from relocation results file
-                all_EQ_outputs = final_EQ_cat_txt  # ISCloc FINAL CATALOGUE               
+                evdepth_exists = False
+                if  final_EQ_cat_txt != False:
+                    all_EQ_outputs = final_EQ_cat_txt  # ISCloc FINAL CATALOGUE               
 
-                with open(all_EQ_outputs, 'r') as file:
-                    for line in file:
-                        if event_id in line:
-                            ev_row = line.strip().split('\t')
-                            evdepth = float(ev_row[10])
-                            evdepth_exists = True
-                            print("Event depth:", evdepth)
-                            break
-                        else:
-                            evdepth_exists = False
+                    with open(all_EQ_outputs, 'r') as file:
+                        for line in file:
+                            if event_id in line:
+                                ev_row = line.strip().split('\t')
+                                evdepth = float(ev_row[10])
+                                evdepth_exists = True
+                                print("Event depth:", evdepth)
+                                break
+                            else:
+                                evdepth_exists = False
+                
+                elif depth != False:
+                    evdepth = depth
+                    evdepth_exist = True
                             
                 if evdepth_exists == False:
                     print("No relocated event depth available.")
@@ -200,7 +206,7 @@ def determine_crustal_thickness(catalogue, event, gen_dir, res_dir, final_EQ_cat
                 f.write('\n')
                 f.close()
 
-                assert len(test_subarrays_list) > 0
+                assert len(test_subarrays_list) > 0, "No ad-hoc array candidates to check for pmP."
                        
                 # ---------- EXTRACT FIRST-PASS CRUSTAL THICKNESS AT EVENT COORDINATES ----------
 
@@ -452,7 +458,7 @@ def determine_crustal_thickness(catalogue, event, gen_dir, res_dir, final_EQ_cat
                     f.write('\n')
                     f.close()
                     
-                assert len(subarrays_with_pmP_picks) > 0
+                assert len(subarrays_with_pmP_picks) > 0, "No candidate ad-hoc arrays with pmP picks."
                       
                 # ---------- CALCULATE CRUSTAL THICKNESSES FROM pmP-pP DELAY TIME USING FORWARD MODELLING APPROACH ---------
                     

@@ -20,7 +20,7 @@ from NE_processing import process_NE_components
 from array_processing import run_array_processing
 from figures import make_figures
 from iscloc_wrapper import run_iscloc
-from iscloc_results import strip_iscloc_results
+from iscloc_results import strip_iscloc_results, extract_iscloc_relocation_depth
 
 sys.path.append(os.path.abspath('pmP_Scripts'))
 from pmP_crustal_thickness import determine_crustal_thickness
@@ -30,17 +30,30 @@ from pmP_crustal_thickness import determine_crustal_thickness
 #[Recommend doing everything in one go if you are looking at a single event]
 #[If looking at multiple events, download intial obspyDMT catalogue separately then run rest of steps per event (can use a task array)]
 
+# Run once 
 make_obspydmt_catalogue = False
+
+# Can be run as part of a task array, 1 process per event
 download_data = False
 process_data = True
 array_process_data = True
 make_array_figures = True
-relocate_with_iscloc = True
+relocate_with_iscloc = True   # can be run one for all files in ISCloc/inputs --> all_events=True
 find_crustal_thickness = True
 
 
+# Earthquake to analyse ------------------------------------------
+event = int(sys.argv[1:][0]) # row number in ObspyDMT catalogue or txt file catalogue in individual_catalogues
+if not event:
+    event = 1 # defaults to 1st event (potentially only event) in catalogue
+    
+total_events = int(sys.argv[1:][1]) #in task array/loop etc.
+if not total_events:
+    total_events = 1 # defaults to 1 event (potentially only event) in catalogue
+
+
 # Set up -------------------------------------------------------
-cat_name = 'ObspyDMT_Events'
+cat_name = 'SASZ_Deep_Events_ObspyDMT'
 
 # Make project file structure
 '''Parent_dir -- Scripts -- pmP_scripts
@@ -65,10 +78,6 @@ pmP_dir = str(scripts_dir) +'/pmP_Scripts'
 inputs_dir = str(results_dir) + '/ISCloc/inputs/'
 station_list_dir =  str(results_dir) +'/ISCloc/stations/station_list.'
 outputs_dir = str(results_dir) + '/ISCloc/outputs/'
-
-
-# Earthquake to analyse ------------------------------------------
-event = 1 # row number in ObspyDMT catalogue or txt file catalogue in individual_catalogues
 
 
 # Download initial ObpsyDMT event catalogue ----------------------
@@ -122,16 +131,27 @@ if make_array_figures:
 
 # Run ISCloc -----------------------------------------------------
 if relocate_with_iscloc:
-    # Compile ISCloc with 'make' in src directory, move iscloc_nodb to the same file level as this script, put 'export QETC=file_path_to/ISClocRelease2.2.6/etc' in .bashrc
-    run_iscloc(inputs_dir, station_list_dir, outputs_dir)
-
+    # Must have run compile_iscloc.sh in ISClocRelease2.2.6/src2.2.7
+    run_iscloc(inputs_dir, station_list_dir, outputs_dir, all_events=False, catalogue=catalogue, event=event)
+    
+    # Find new relocated event depth from ISCloc (for pmP detection)
+    depth = extract_iscloc_relocation_depth(outputs_dir, catalogue, event)
+    
     # Make 3D earthquake relocation catalogue ------------------------
-    strip_iscloc_results(str(results_dir)+'/Final_3D_Catalogue', analysis_only=False, iscloc_inputs=inputs_dir, iscloc_outputs=outputs_dir, include_original_phase_results=False)
+    if int(event) == int(total_events): # only run once, on final event
+        strip_iscloc_results(str(results_dir)+'/Final_3D_Catalogue', analysis_only=False, iscloc_inputs=inputs_dir, iscloc_outputs=outputs_dir, include_original_phase_results=False)
 
 
 # Detect pmP -----------------------------------------------------
 if find_crustal_thickness:
-    determine_crustal_thickness(catalogue, event, pmP_dir, str(results_dir), final_EQ_cat_txt=str(results_dir)+'/Final_3D_Catalogue.txt', reprocess=True, make_figures=True, plot_velocity_models=False, include_sea=False)
+    
+    final_EQ_cat_txt=str(results_dir)+'/Final_3D_Catalogue.txt'
+    if os.path.exists(final_EQ_cat_txt):
+        # Can only use the final catalogue for inital depths in pmP scripts if strip_iscloc_results has been run and generated Final_3D_Catalogue.txt
+        determine_crustal_thickness(catalogue, event, pmP_dir, str(results_dir), reprocess=True, make_figures=True, plot_velocity_models=False, include_sea=False, final_EQ_cat_txt=final_EQ_cat_txt, depth=False)
+    
+    else:
+        determine_crustal_thickness(catalogue, event, pmP_dir, str(results_dir), reprocess=True, make_figures=True, plot_velocity_models=False, include_sea=False, final_EQ_cat_txt=False, depth=depth) 
 
 print()
 print('Scripts complete.')

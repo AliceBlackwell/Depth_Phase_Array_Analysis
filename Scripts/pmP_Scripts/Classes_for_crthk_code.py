@@ -723,7 +723,7 @@ class Cr_subarray:
         
         for i in range(len(pmP_arr.pierce)):
             if pmP_arr.pierce[i]['depth'] == crthk:
-                #print(pmP_arr, dir(pmP_arr))
+                print(pmP_arr.pierce[i], hasattr(pmP_arr,'pierce_points'))
                 pmP_bounce_lat = pmP_arr.pierce[i]['lat']
                 pmP_bounce_lon = pmP_arr.pierce[i]['lon']
                 #print("Coordinates of the pmP bounce point at the Moho are ", pmP_bounce_lat, ", ", pmP_bounce_lon)
