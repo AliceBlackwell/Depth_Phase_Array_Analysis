@@ -877,7 +877,7 @@ def Plot_all_event_data(subarray_list, event_name, evla, evlo, first_pass_crthk,
 def write_out_results(subarray_list, event_name, event_id, res_dir, output_file):
 
     ev_dir = os.path.join(res_dir, str(event_name))
-    f = open(ev_dir + '/pmP_1.72filtered_catalogue.txt', 'w+')
+    f = open(ev_dir + '/pmP_catalogue.txt', 'w+')
     f.write('Event'.ljust(15) + '\t' + 'Event_ID'.ljust(10) + '\t' + 'Baz'.ljust(8) + '\t' + 'Gcarc'.ljust(8) + '\t' + 'Cr1_thk'.ljust(8) + '\t' + 'Bpt_Lat'.ljust(8) + '\t' + 'Bpt_Lon'.ljust(8) + '\t' + 'pmP_amp_pw'.ljust(8) + '\t' + 'pP_amp_pw'.ljust(8) + '\t' + 'pmP_amp'.ljust(8) + '\t' + 'pP_amp'.ljust(8) + '\t' + 'pP-pmP_dt'.ljust(10) + '\t' + 'New_Cr_thk'.ljust(12) + '\n')
        
     for subarray in subarray_list:
@@ -899,10 +899,12 @@ def write_out_results(subarray_list, event_name, event_id, res_dir, output_file)
     
     f.close() 
     
-    f_all = open(res_dir + output_file, 'a+')
+    file_exists = os.path.isfile(res_dir + output_file)
     
-    #f_all.write('Event'.ljust(15) + '\t' + 'Event_ID'.ljust(10) + '\t' + 'Baz'.ljust(8) + '\t' + 'Gcarc'.ljust(8) + '\t' + 'Cr1_thk'.ljust(8) + '\t' + 'Bpt_Lat'.ljust(8) + '\t' + 'Bpt_Lon'.ljust(8) + '\t' + 'pmP_amp'.ljust(8) + '\t' + 'pP_amp'.ljust(8)+ '\t' + 'pP-pmP_dt'.ljust(10) + '\t' + 'New_Cr_thk'.ljust(12) + '\n')
-       
+    f_all = open(res_dir + output_file, 'a+')
+    if not file_exists:
+        f_all.write('Event'.ljust(15) + '\t' + 'Event_ID'.ljust(10) + '\t' + 'Baz'.ljust(8) + '\t' + 'Gcarc'.ljust(8) + '\t' + 'Cr1_thk'.ljust(8) + '\t' + 'Bpt_Lat'.ljust(8) + '\t' + 'Bpt_Lon'.ljust(8) + '\t' + 'pmP_amp'.ljust(8) + '\t' + 'pP_amp'.ljust(8)+ '\t' + 'pP-pmP_dt'.ljust(10) + '\t' + 'New_Cr_thk'.ljust(12) + '\n')
+    
     for subarray in subarray_list:
         if subarray.pmP_pick_exists == True:
             #if (subarray.pmP_pw_amplitude/subarray.pP_pw_amplitude) <= 1.72:
