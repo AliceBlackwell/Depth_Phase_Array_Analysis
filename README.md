@@ -4,7 +4,7 @@ Depth Phase Array Analysis is a seismic data processing workflow designed to det
 
 ## 📌 Description
 
-This project automates the following:
+This project automatically does the following:
 
 - Creates an initial earthquake catalogue using [ObspyDMT](https://github.com/krischer/obspydmt)
 - Downloads seismic waveform data (1 or 3 components)
@@ -19,7 +19,7 @@ Clone the repository:
 
 ```bash
 git clone https://github.com/AliceBlackwell/Depth_Phase_Array_Analysis.git
-cd Depth_Phase_Array_Analysis
+cd Depth_Phase_Array_Analysis/Scripts
 ```
 
 Create conda environment and install packages:
