@@ -370,7 +370,7 @@ def strip_iscloc_results(final_3D_cat_name, analysis_only, iscloc_inputs, iscloc
 
     if analysis_only != True:
         
-        name = '%s_detailed.csv' %final_3D_cat_name
+        name = '%_detailed.csv' %final_3D_cat_name[:-4]
         
         # work through output files from ISF input plus AB phases
         file_flag = '[0-9]+\.out'  # added AB phases 
@@ -419,7 +419,7 @@ def strip_iscloc_results(final_3D_cat_name, analysis_only, iscloc_inputs, iscloc
             plot_data.to_csv(name)
           
         # Create final (nice) catalogue from ISCloc results
-        name = str(final_3D_cat_name) + '.txt'
+        name = str(final_3D_cat_name)
         
         cols=['AB_date', 'AB_origin_time', 'evid', 'magnitude', 'AB_hyp_lat', 'AB_hyp_lon', 'AB_Smaj', 'AB_Smin', 'AB_Az', 'ISC_depth', 'AB_depth', 'AB_depth_err']
         
@@ -443,7 +443,7 @@ def strip_iscloc_results(final_3D_cat_name, analysis_only, iscloc_inputs, iscloc
 
     # ======== LOAD DF ========
     # load dataframe from csv file
-    df = pd.read_csv('%s_detailed.csv' %final_3D_cat_name, dtype=float, converters={'ISC_date':str, 'ISC_origin_time':str, 'EHB_date':str, 'EHB_origin_time':str, 'GCMT_date':str, 'GCMT_origin_time':str, 'NEIC_date':str, 'NEIC_origin_time':str, 'AB_date':str, 'AB_origin_time':str, 'ISF_date':str, 'ISF_origin_time':str, 'noS_date':str, 'noS_origin_time':str})   
+    df = pd.read_csv('%s_detailed.csv' %final_3D_cat_name[:-4], dtype=float, converters={'ISC_date':str, 'ISC_origin_time':str, 'EHB_date':str, 'EHB_origin_time':str, 'GCMT_date':str, 'GCMT_origin_time':str, 'NEIC_date':str, 'NEIC_origin_time':str, 'AB_date':str, 'AB_origin_time':str, 'ISF_date':str, 'ISF_origin_time':str, 'noS_date':str, 'noS_origin_time':str})   
 
     # filter df to remove events <40 km, >350 km
     df = df[df['ISC_depth']>=40]

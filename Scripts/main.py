@@ -36,11 +36,11 @@ make_obspydmt_catalogue = False
 
 # Can be run as part of a task array, 1 process per event
 download_data = False
-process_data = True
+process_data = Falserm 
 array_process_data = False
 make_array_figures = False
-relocate_with_iscloc = False   # can be run one for all files in ISCloc/inputs --> all_events=True
-find_crustal_thickness = False
+relocate_with_iscloc = True   # can be run one for all files in ISCloc/inputs --> all_events=True
+find_crustal_thickness = True
 
 
 # Earthquake to analyse ------------------------------------------
@@ -119,7 +119,8 @@ if array_process_data:
     component = 'ZNE'   # string: 'Z' or 'ZNE'
 
     # ISCloc preparation
-    run_array_processing(catalogue, event, str(results_dir), str(data_dir), component, do_array_processing=True, depth_conversion=False, iscloc=True)
+    run_array_processing(catalogue, event, str(results_dir), str(data_dir), component, do_array_processing=FTrue, depth_conversion=False, iscloc=True)
+    
 
     # Run again for cleaned diffential time outputs (for pmP detection etc)
     run_array_processing(catalogue, event, str(results_dir), str(data_dir), component, do_array_processing=False, depth_conversion=True, iscloc=False)
