@@ -32,29 +32,36 @@ from pmP_catalogue import assemble_clean_pmP_cat
 #[If looking at multiple events, download intial obspyDMT catalogue separately then run rest of steps per event (can use a task array)]
 
 # Run once 
-make_obspydmt_catalogue = False
+make_obspydmt_catalogue = True
 
 # Can be run as part of a task array, 1 process per event
-download_data = False
-process_data = False
-array_process_data = False
-make_array_figures = False
-relocate_with_iscloc = False   # can be run once for all files in ISCloc/inputs --> all_events=True
-find_crustal_thickness = False
+download_data = True
+process_data = True
+array_process_data = True
+make_array_figures = True
+relocate_with_iscloc = True   # can be run once for all files in ISCloc/inputs --> all_events=True
+find_crustal_thickness = True
 
 # Run once if necessary
-make_final_catalogues = True
+make_final_catalogues = False
 
 
 # Earthquake to analyse ------------------------------------------
-event = int(sys.argv[1:][0]) # row number in ObspyDMT catalogue or txt file catalogue in individual_catalogues
-if not event:
+inputs = sys.argv[1:]
+if not inputs:
     event = 1 # defaults to 1st event (potentially only event) in catalogue
-    
-total_events = int(sys.argv[1:][1]) #in task array/loop etc.
-if not total_events:
     total_events = 1 # defaults to 1 event (potentially only event) in catalogue
-
+    
+else:
+    try:
+        event = int(sys.argv[1:][0]) # row number in ObspyDMT catalogue or txt file catalogue in individual_catalogues
+        total_events = int(sys.argv[1:][1]) #in task array/loop etc.
+    except:
+        print()
+        print("ERROR: Input command should be formatted 'python main.py n m', where n is the event number in obspyDMT catalogue to process and m is the total events being processed.")
+        print("Leave m and n blank if running for a single event.")
+        print()
+        sys.exit()
 
 # Set up -------------------------------------------------------
 cat_name = 'SASZ_Deep_Events_ObspyDMT'
@@ -166,7 +173,7 @@ if find_crustal_thickness:
         assemble_clean_pmP_cat(uncleaned_pmP_cat=str(results_dir) + '/Final_pmP_catalogue_5.9.txt', final_3D_EQ_cat=final_EQ_cat_txt, obspydmt_cat_name=cat_file, cleaned_pmP_cat=str(results_dir) + '/Final_cleaned_pmP_catalogue.txt')
 
 if make_final_catalogues == True:
-    strip_iscloc_results(final_EQ_cat_txt, analysis_only=False, iscloc_inputs=inputs_dir, iscloc_outputs=outputs_dir, include_original_phase_results=False)rm sl	
+    strip_iscloc_results(final_EQ_cat_txt, analysis_only=False, iscloc_inputs=inputs_dir, iscloc_outputs=outputs_dir, include_original_phase_results=False)	
     assemble_clean_pmP_cat(uncleaned_pmP_cat=str(results_dir) + '/Final_pmP_catalogue_5.9.txt', final_3D_EQ_cat=final_EQ_cat_txt, obspydmt_cat_name=cat_file, cleaned_pmP_cat=str(results_dir) + '/Final_cleaned_pmP_catalogue.txt')
 
 print()
