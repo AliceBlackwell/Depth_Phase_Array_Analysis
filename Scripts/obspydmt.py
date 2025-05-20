@@ -55,9 +55,10 @@ def run_obspyDMT(name, make_catalogue, split_catalogue, download_data_Z, downloa
     file = '%s.xml' %name
     client = Client('ISC')
     #station_separation = '0.01' #degrees'''
-
-    t1 = str(UTCDateTime("1995-08-19T21:40:00"))
-    t2 = str(UTCDateTime("1995-08-19T21:45:59"))
+    
+    # *** CHOOSE SEARCH PARAMETERS HERE *** #
+    t1 = str(UTCDateTime("1995-02-08T18:30:00"))
+    t2 = str(UTCDateTime("1995-02-08T19:30:59"))
     mlat = '-58.0'
     maxlat = '14.0'
     mlon = '-83.0'
