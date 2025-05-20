@@ -43,7 +43,9 @@ Use the main.py wrapper to see an example of how to run the workflow steps.
 To search for an initial earthquake catalogue to relocate, change the parameters in obspydmt.py.
 
 ```bash
-python main.py n m # n is the event index in the generated ObspyDMT catalogue, m is total events to process (leave blank for a single event use)
+python main.py n m
+# n is the event index in the generated ObspyDMT catalogue, m is total events to process
+# (leave blank for a single event use)
 ```
 
 The workflow is fully described in ADD_PAPER_HERE.
