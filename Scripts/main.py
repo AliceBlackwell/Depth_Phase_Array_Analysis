@@ -39,7 +39,7 @@ download_data = False
 process_data = False
 array_process_data = False
 make_array_figures = False
-relocate_with_iscloc = False   # can be run one for all files in ISCloc/inputs --> all_events=True
+relocate_with_iscloc = False   # can be run once for all files in ISCloc/inputs --> all_events=True
 find_crustal_thickness = False
 
 # Run once if necessary
@@ -166,7 +166,7 @@ if find_crustal_thickness:
         assemble_clean_pmP_cat(uncleaned_pmP_cat=str(results_dir) + '/Final_pmP_catalogue_5.9.txt', final_3D_EQ_cat=final_EQ_cat_txt, obspydmt_cat_name=cat_file, cleaned_pmP_cat=str(results_dir) + '/Final_cleaned_pmP_catalogue.txt')
 
 if make_final_catalogues == True:
-    strip_iscloc_results(final_EQ_cat_txt, analysis_only=False, iscloc_inputs=inputs_dir, iscloc_outputs=outputs_dir, include_original_phase_results=False)
+    strip_iscloc_results(final_EQ_cat_txt, analysis_only=False, iscloc_inputs=inputs_dir, iscloc_outputs=outputs_dir, include_original_phase_results=False)rm sl	
     assemble_clean_pmP_cat(uncleaned_pmP_cat=str(results_dir) + '/Final_pmP_catalogue_5.9.txt', final_3D_EQ_cat=final_EQ_cat_txt, obspydmt_cat_name=cat_file, cleaned_pmP_cat=str(results_dir) + '/Final_cleaned_pmP_catalogue.txt')
 
 print()

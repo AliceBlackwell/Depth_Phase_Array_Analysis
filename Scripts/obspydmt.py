@@ -230,7 +230,7 @@ def run_obspyDMT(name, make_catalogue, split_catalogue, download_data_Z, downloa
         os.system(command_load)
 
     if make_catalogue!=True and split_catalogue!=True and download_data_Z!=True and download_data_NEZ!=True:
-        print('You need to select a mode by changing the flags at the top of the script.')
+        print('You need to select a mode by changing the input flags.')
     else:
         print('Script complete. Catalogue/Data located in %s.' %name)
     return
