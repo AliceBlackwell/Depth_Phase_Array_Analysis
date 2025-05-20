@@ -31,7 +31,7 @@ def assemble_clean_pmP_cat(uncleaned_pmP_cat, final_3D_EQ_cat, obspydmt_cat_name
     #Load data points
     evname, eventid, baz, gcarc, crust1_depth, lat, lon, pmP_pw_amp, pP_pw_amp, pmP_amp, pP_amp, delay_time, moho_depth = np.loadtxt(uncleaned_pmP_cat, skiprows=1, unpack=True, usecols=(0,1,2,3,4,5,6,7,8,9,10,11,12))
 
-    print('No. of Data Points:', len(lat))
+    print('No. of Data Points pre-pmP clean:', len(lat))
     print()
 
     # Extract event details per pmP data point
@@ -84,7 +84,7 @@ def assemble_clean_pmP_cat(uncleaned_pmP_cat, final_3D_EQ_cat, obspydmt_cat_name
     ev_z = np.array(ev_z)
     rel_pw_amp = pmP_pw_amp/pP_pw_amp
 
-    evname = evname[ev_z >= 40]
+    '''evname = evname[ev_z >= 40]
     eventid = eventid[ev_z >= 40]
     baz = baz[ev_z >= 40]
     gcarc = gcarc[ev_z >= 40]
@@ -118,7 +118,7 @@ def assemble_clean_pmP_cat(uncleaned_pmP_cat, final_3D_EQ_cat, obspydmt_cat_name
     ev_x = ev_x[ev_z <= 350]
     ev_y = ev_y[ev_z <= 350]
     rel_pw_amp = rel_pw_amp[ev_z <= 350]
-    ev_z = ev_z[ev_z <= 350]
+    ev_z = ev_z[ev_z <= 350]'''
 
 
     print('No. of Data Points:', len(ev_x))
@@ -146,7 +146,7 @@ def assemble_clean_pmP_cat(uncleaned_pmP_cat, final_3D_EQ_cat, obspydmt_cat_name
 
     ## Write out new final catalogue ##
     f = open(cleaned_pmP_cat, 'w+')
-    f.write('Event'.ljust(15) + '\t' + 'Event_ID'.ljust(10) + '\t' + 'Baz'.ljust(8) + '\t' + 'Gcarc'.ljust(8) + '\t' + 'Cr1_thk'.ljust(8) + '\t' + 'Bpt_Lat'.ljust(8) + '\t' + 'Bpt_Lon'.ljust(8) + '\t' + 'pmP_amp_pw'.ljust(8) + '\t' + 'pP_amp_pw'.ljust(8) + '\t' + 'pmP_amp'.ljust(8) + '\t' + 'pP_amp'.ljust(8) + '\t' + 'pP-pmP_dt'.ljust(10) + '\t' + 'New_Cr_thk'.ljust(12) + '\n')
+    f.write('Event'.ljust(15) + '\t' + 'Event_ID'.ljust(10) + '\t' + 'Baz'.ljust(8) + '\t' + 'Gcarc'.ljust(8) + '\t' + 'Cr1_thk'.ljust(8) + '\t' + 'Bpt_Lat'.ljust(8) + '\t' + 'Bpt_Lon'.ljust(8) + '\t' + 'pmP_amp'.ljust(8) + '\t' + 'pP_amp'.ljust(8) + '\t' + 'pP-pmP_dt'.ljust(10) + '\t' + 'New_Cr_thk'.ljust(12) + '\n')
 
     for i in range (len(evname)):
         #if (subarray.pmP_pw_amplitude/subarray.pP_pw_amplitude) <= 1.72:

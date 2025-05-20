@@ -36,11 +36,14 @@ make_obspydmt_catalogue = False
 
 # Can be run as part of a task array, 1 process per event
 download_data = False
-process_data = Falserm 
+process_data = False
 array_process_data = False
 make_array_figures = False
-relocate_with_iscloc = True   # can be run one for all files in ISCloc/inputs --> all_events=True
-find_crustal_thickness = True
+relocate_with_iscloc = False   # can be run one for all files in ISCloc/inputs --> all_events=True
+find_crustal_thickness = False
+
+# Run once if necessary
+make_final_catalogues = True
 
 
 # Earthquake to analyse ------------------------------------------
@@ -81,6 +84,9 @@ inputs_dir = str(results_dir) + '/ISCloc/inputs/'
 station_list_dir =  str(results_dir) +'/ISCloc/stations/station_list.'
 outputs_dir = str(results_dir) + '/ISCloc/outputs/'
 
+final_EQ_cat_name='Final_3D_Catalogue'
+final_EQ_cat_txt=str(results_dir)+'/' + final_EQ_cat_name + '.txt'
+
 
 # Download initial ObpsyDMT event catalogue ----------------------
 if make_obspydmt_catalogue:
@@ -119,7 +125,7 @@ if array_process_data:
     component = 'ZNE'   # string: 'Z' or 'ZNE'
 
     # ISCloc preparation
-    run_array_processing(catalogue, event, str(results_dir), str(data_dir), component, do_array_processing=FTrue, depth_conversion=False, iscloc=True)
+    run_array_processing(catalogue, event, str(results_dir), str(data_dir), component, do_array_processing=False, depth_conversion=False, iscloc=True)
     
 
     # Run again for cleaned diffential time outputs (for pmP detection etc)
@@ -141,7 +147,6 @@ if relocate_with_iscloc:
     depth = extract_iscloc_relocation_depth(outputs_dir, catalogue, event)
     
     # Make 3D earthquake relocation catalogue ------------------------
-    final_EQ_cat_txt=str(results_dir)+'/Final_3D_Catalogue.txt'
     if int(event) == int(total_events): # only run once, on final event
         strip_iscloc_results(final_EQ_cat_txt, analysis_only=False, iscloc_inputs=inputs_dir, iscloc_outputs=outputs_dir, include_original_phase_results=False)
 
@@ -158,7 +163,11 @@ if find_crustal_thickness:
 
     # Make 3D earthquake relocation catalogue ------------------------
     if int(event) == int(total_events): # only run once, on final event
-        assemble_clean_pmP_cat(uncleaned_pmP_cat=str(results_dir) + '/Final_pmP_catalogue.txt', final_3D_EQ_cat=final_EQ_cat_txt, obspydmt_cat_name=cat_name, cleaned_pmP_cat=str(results_dir) + '/Final_cleaned_pmP_catalogue.txt')
+        assemble_clean_pmP_cat(uncleaned_pmP_cat=str(results_dir) + '/Final_pmP_catalogue_5.9.txt', final_3D_EQ_cat=final_EQ_cat_txt, obspydmt_cat_name=cat_file, cleaned_pmP_cat=str(results_dir) + '/Final_cleaned_pmP_catalogue.txt')
+
+if make_final_catalogues == True:
+    strip_iscloc_results(final_EQ_cat_txt, analysis_only=False, iscloc_inputs=inputs_dir, iscloc_outputs=outputs_dir, include_original_phase_results=False)
+    assemble_clean_pmP_cat(uncleaned_pmP_cat=str(results_dir) + '/Final_pmP_catalogue_5.9.txt', final_3D_EQ_cat=final_EQ_cat_txt, obspydmt_cat_name=cat_file, cleaned_pmP_cat=str(results_dir) + '/Final_cleaned_pmP_catalogue.txt')
 
 print()
 print('Scripts complete.')

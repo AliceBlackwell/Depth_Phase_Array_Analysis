@@ -369,8 +369,8 @@ def main(input_txt, iscloc_inputs):
 def strip_iscloc_results(final_3D_cat_name, analysis_only, iscloc_inputs, iscloc_outputs, include_original_phase_results):
 
     if analysis_only != True:
-        
-        name = '%_detailed.csv' %final_3D_cat_name[:-4]
+        print(final_3D_cat_name[:-4])
+        name = final_3D_cat_name[:-4] + '_detailed.csv'
         
         # work through output files from ISF input plus AB phases
         file_flag = '[0-9]+\.out'  # added AB phases 
@@ -423,8 +423,8 @@ def strip_iscloc_results(final_3D_cat_name, analysis_only, iscloc_inputs, iscloc
         
         cols=['AB_date', 'AB_origin_time', 'evid', 'magnitude', 'AB_hyp_lat', 'AB_hyp_lon', 'AB_Smaj', 'AB_Smin', 'AB_Az', 'ISC_depth', 'AB_depth', 'AB_depth_err']
         
-        plot_data = plot_data[(pd.to_numeric(plot_data['ISC_depth'], errors='coerce')>=40)] # remove events which were initially <40 km deep
-        plot_data = plot_data[(pd.to_numeric(plot_data['ISC_depth'], errors='coerce')<=350)]
+        '''plot_data = plot_data[(pd.to_numeric(plot_data['ISC_depth'], errors='coerce')>=40)] # remove events which were initially <40 km deep
+        plot_data = plot_data[(pd.to_numeric(plot_data['ISC_depth'], errors='coerce')<=350)]'''
         plot_data = plot_data[(plot_data['no.total_time_defining_dp_AB']>0)] # only events where phases were added
         plot_data = plot_data[(plot_data['AB_fixed']==0)] # no depth fixed events relocations
         final_cat_df = plot_data[cols].to_numpy()
@@ -443,11 +443,11 @@ def strip_iscloc_results(final_3D_cat_name, analysis_only, iscloc_inputs, iscloc
 
     # ======== LOAD DF ========
     # load dataframe from csv file
-    df = pd.read_csv('%s_detailed.csv' %final_3D_cat_name[:-4], dtype=float, converters={'ISC_date':str, 'ISC_origin_time':str, 'EHB_date':str, 'EHB_origin_time':str, 'GCMT_date':str, 'GCMT_origin_time':str, 'NEIC_date':str, 'NEIC_origin_time':str, 'AB_date':str, 'AB_origin_time':str, 'ISF_date':str, 'ISF_origin_time':str, 'noS_date':str, 'noS_origin_time':str})   
+    df = pd.read_csv(final_3D_cat_name[:-4] + '_detailed.csv', dtype=float, converters={'ISC_date':str, 'ISC_origin_time':str, 'EHB_date':str, 'EHB_origin_time':str, 'GCMT_date':str, 'GCMT_origin_time':str, 'NEIC_date':str, 'NEIC_origin_time':str, 'AB_date':str, 'AB_origin_time':str, 'ISF_date':str, 'ISF_origin_time':str, 'noS_date':str, 'noS_origin_time':str})   
 
     # filter df to remove events <40 km, >350 km
-    df = df[df['ISC_depth']>=40]
-    df = df[df['ISC_depth']<=350]
+    '''df = df[df['ISC_depth']>=40]
+    df = df[df['ISC_depth']<=350]'''
 
     # ========= Statistics ==========
     print()

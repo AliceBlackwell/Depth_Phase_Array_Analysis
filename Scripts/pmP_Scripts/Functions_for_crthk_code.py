@@ -903,7 +903,7 @@ def write_out_results(subarray_list, event_name, event_id, res_dir, output_file)
     
     f_all = open(res_dir + output_file, 'a+')
     if not file_exists:
-        f_all.write('Event'.ljust(15) + '\t' + 'Event_ID'.ljust(10) + '\t' + 'Baz'.ljust(8) + '\t' + 'Gcarc'.ljust(8) + '\t' + 'Cr1_thk'.ljust(8) + '\t' + 'Bpt_Lat'.ljust(8) + '\t' + 'Bpt_Lon'.ljust(8) + '\t' + 'pmP_amp'.ljust(8) + '\t' + 'pP_amp'.ljust(8)+ '\t' + 'pP-pmP_dt'.ljust(10) + '\t' + 'New_Cr_thk'.ljust(12) + '\n')
+        f.write('Event'.ljust(15) + '\t' + 'Event_ID'.ljust(10) + '\t' + 'Baz'.ljust(8) + '\t' + 'Gcarc'.ljust(8) + '\t' + 'Cr1_thk'.ljust(8) + '\t' + 'Bpt_Lat'.ljust(8) + '\t' + 'Bpt_Lon'.ljust(8) + '\t' + 'pmP_amp_pw'.ljust(8) + '\t' + 'pP_amp_pw'.ljust(8) + '\t' + 'pmP_amp'.ljust(8) + '\t' + 'pP_amp'.ljust(8) + '\t' + 'pP-pmP_dt'.ljust(10) + '\t' + 'New_Cr_thk'.ljust(12) + '\n')
     
     for subarray in subarray_list:
         if subarray.pmP_pick_exists == True:
