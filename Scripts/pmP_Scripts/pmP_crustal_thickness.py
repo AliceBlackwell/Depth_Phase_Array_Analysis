@@ -538,6 +538,13 @@ def determine_crustal_thickness(catalogue, event, gen_dir, res_dir, reprocess, m
                 successful_subarrays_path = os.path.join(output_dir, 'successful_Cr_subarrays.npy')
                 subarrays_with_pmP_picks = np.load(successful_subarrays_path, allow_pickle=True)
                 
+                # create folder for figures
+                fig_dir = os.path.join(output_dir, 'Crust_code_figures')   
+                try: 
+                    os.mkdir(fig_dir)
+                except FileExistsError:
+                    pass
+                
 
                 for subarray in subarrays_with_pmP_picks:        
                         outputs = subarray.outputs
