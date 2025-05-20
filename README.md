@@ -30,7 +30,7 @@ conda activate dpa-env
 pip install -r requirements.txt
 ```
 
-Compile ISCLoc (including changing the Makefile to point towards conda packages) and edit .bashrc:
+Compile ISCloc (including changing the Makefile to point towards conda packages) and edit .bashrc:
 
 ```bash
 cd ISClocRelease2.2.6/src2.2.7
