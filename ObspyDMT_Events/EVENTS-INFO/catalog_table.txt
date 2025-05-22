@@ -1,0 +1,16 @@
+Command line:
+-------------
+/users/ee18ab/.conda/envs/environment/bin/obspyDMT --datapath ObspyDMT_Events --event_rect -83.0/-60.0/-58.0/14.0 --min_depth 40.0 --max_depth 350.0 --mag_type mb --min_mag 4.7 --max_mag 6.5 --min_date 2010-05-23T22:00:00.000000Z --max_date 2010-05-23T22:59:59.000000Z --event_catalog ISC --isc_catalog COMPREHENSIVE --event_info 
+
+#N LAT       LON       DEP  DATETIME             MAG   AUTH EV_ID              FLY  
+--------------------------------------------------------------------------------
+1   -13.983   -74.369  100  2010-05-23T22:46:51  6.21  ISC  20100523_224651.a  NAN
+--------------------------------------------------------------------------------
+Command line:
+-------------
+/users/ee18ab/.conda/envs/environment/bin/obspyDMT --datapath ObspyDMT_Events --data_source BGR,EMSC,ETH,GEONET,GFZ,ICGC,INGV,IPGP,ISC,KNMI,KOERI,LMU,NCEDC,NIEP,NOA,ODC,ORFEUS,RASPISHAKE,RESIF,SCEDC,TEXNET,UIB-NORSAR,USGS,USP,IRIS --min_epi 30 --max_epi 90 --cha BHE,HHE,BHN,HHN,BH1,HH1,BH2,HH2,BHZ,HHZ --preset 200 --offset 1500 --read_catalog ObspyDMT_Events/EVENTS-INFO/individual_catalogues/1.txt --corr_unit=VEL --instrument_correction --sampling_rate=10 
+
+#N LAT       LON       DEP  DATETIME             MAG   AUTH EV_ID              FLY  
+--------------------------------------------------------------------------------
+1   -13.983   -74.369  100  2010-05-23T22:46:51  6.21  ISC  20100523_224651.a  NAN
+--------------------------------------------------------------------------------

@@ -1,0 +1,2 @@
+#number,event_id,datetime,latitude,longitude,depth,magnitude,magnitude_type,author,flynn_region,mrr,mtt,mpp,mrt,mrp,mtp,stf_func,stf_duration,t1,t2
+1,20100523_224651.a,2010-05-23T22:46:51.180000Z,-13.9831,-74.3693,99.6423,6.21,mb,ISC,NAN,None,None,None,None,None,None,None,None,2010-05-23T22:46:51.180000Z,2010-05-23T23:16:51.180000Z

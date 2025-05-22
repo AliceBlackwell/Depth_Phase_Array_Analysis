@@ -1,0 +1,40 @@
+Command line:
+-------------
+/users/ee18ab/.conda/envs/environment/bin/obspyDMT --datapath ObspyDMT_Events --event_rect -83.0/-60.0/-58.0/14.0 --min_depth 40.0 --max_depth 350.0 --mag_type mb --min_mag 4.7 --max_mag 6.5 --min_date 2010-05-23T22:00:00.000000Z --max_date 2010-05-23T22:59:59.000000Z --event_catalog ISC --isc_catalog COMPREHENSIVE --event_info 
+
+Information about the requested Events:
+
+Number of Events: 1
+min datetime: 2010-05-23T22:00:00.000000Z
+max datetime: 2010-05-23T22:59:59.000000Z
+min magnitude: 4.7
+max magnitude: 6.5
+min latitude: -58.0
+max latitude: 14.0
+min longitude: -83.0
+max longitude: -60.0
+min depth: 40.0
+max depth: 350.0
+
+
+=====================================
+Command line:
+-------------
+/users/ee18ab/.conda/envs/environment/bin/obspyDMT --datapath ObspyDMT_Events --data_source BGR,EMSC,ETH,GEONET,GFZ,ICGC,INGV,IPGP,ISC,KNMI,KOERI,LMU,NCEDC,NIEP,NOA,ODC,ORFEUS,RASPISHAKE,RESIF,SCEDC,TEXNET,UIB-NORSAR,USGS,USP,IRIS --min_epi 30 --max_epi 90 --cha BHE,HHE,BHN,HHN,BH1,HH1,BH2,HH2,BHZ,HHZ --preset 200 --offset 1500 --read_catalog ObspyDMT_Events/EVENTS-INFO/individual_catalogues/1.txt --corr_unit=VEL --instrument_correction --sampling_rate=10 
+
+Information about the requested Events:
+
+Number of Events: 1
+min datetime: 1970-01-01T00:00:00.000000Z
+max datetime: 2025-05-08T14:32:51.120313Z
+min magnitude: 3.0
+max magnitude: 10.0
+min latitude: None
+max latitude: None
+min longitude: None
+max longitude: None
+min depth: -10.0
+max depth: 6000.0
+
+
+=====================================
