@@ -1,0 +1,2 @@
+Event              	Event_id  	Lat     	Lon     	mb  	ISC_Depth	R_Depth	Stdev	Mad  
+2010-05-23T22:46:51	14721049  	-13.9831	-74.3693	6.21	99.64    	106.84 	0.35 	0.3  

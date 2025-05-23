@@ -1,0 +1,72 @@
+event name: 20100523224651
+event depth: 99.6423
+event magnitude: 6.21
+
+Made ZNE stream
+Stream Z dataframe
+   Station_Network Station_Name  Station_Longitude  Station_Latitude
+0               TA         129A        -101.866203         32.630901
+1               TA         130A        -100.965202         32.596100
+2               TA         131A        -100.388802         32.673698
+3               TA         135A         -97.409897         32.557301
+4               TA         137A         -95.755898         32.597301
+5               TA         230A        -101.112396         31.887800
+6               TA         231A        -100.316299         31.935301
+7               TA         232A         -99.646896         31.888000
+8               TA         236A         -96.530998         31.999701
+9               TA         237A         -95.808403         32.001499
+10              TA         238A         -95.120300         32.003399
+11              TA         329A        -101.980797         31.487000
+12              TA         330A        -101.175201         31.406300
+13              TA         331A        -100.426598         31.308500
+14              TA         335A         -97.427101         31.281900
+15              TA         336A         -96.844299         31.386999
+16              TA         337A         -95.885399         31.315901
+17              TA         338A         -95.310600         31.356701
+18              TA         430A        -101.236198         30.786600
+19              TA         437A         -96.138603         30.829201
+20              TA         632A         -99.786301         29.507099
+21              TA         633A         -99.176598         29.459101
+22              TA         732A         -99.970703         28.729200
+23              TA         733A         -99.293900         28.719200
+24              TA         734A         -98.557602         28.847300
+25              TA         832A         -99.974297         28.284401
+26              TA         833A         -99.393898         28.323601
+27              TA         834A         -98.551903         28.125099
+28              TA         933A         -99.274597         27.613300
+29              TA         934A         -98.519203         27.601801
+Start time is Fri May 23 16:41:44 2025
+Beginning array processing
+
+Making arrays for Z data
+Making arrays for N & E data
+Doing TauP to calculate trim times
+Trim times:319 1498
+Array 0 out of 3
+Z stream
+T stream
+Plotting array A0
+Saving out array classes
+
+Loop end time is Fri May 23 16:42:13 2025
+
+Array 1 out of 3
+Z stream
+T stream
+Array A1 failed, corresponding error: Sub-array has less than 8 traces
+Array 2 out of 3
+Z stream
+T stream
+Array A2 failed, corresponding error: Sub-array has less than 8 traces
+Starting Depth Modelling:Fri May 23 16:43:00 2025
+
+Script end time is Fri May 23 16:43:13 2025
+
+event name: 20100523224651
+event depth: 99.6423
+event magnitude: 6.21
+
+Starting Depth Modelling:Fri May 23 16:43:13 2025
+
+Script end time is Fri May 23 16:44:48 2025
+

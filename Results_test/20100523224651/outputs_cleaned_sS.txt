@@ -1,0 +1,1 @@
+array_no	array_lat    	array_lon    	epicentral_distance	backazimuth	dt_sS	depth	S_abs_onset       	sS_abs_onset      	amplitude_S	amplitude_sS

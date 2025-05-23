@@ -1,0 +1,20 @@
+Event name: 20100523224651
+Event depth (relocated): 97.4 km
+Event magnitude: 6.21
+Event latitude: -13.9831
+Event longitude: -74.3693
+No of subarrays to enter pmP search: 1
+First-pass crustal thickness at event coordinates extracted from Crust1: 70.0 km
+
+No of subarrays without any peaks within the search window: 0
+No of subarrays with peaks within the search window: 1
+
+No of subarrays with no picks above the snr threshold: 0
+No of subarrays with one pick above the snr threshold: 1
+No of subarrays with multiple picks above the snr threshold: 0
+
+Crustal thickness values from FM for subarrays with one snr filtered pick: 
+
+Epicentral Distance (degrees), New crustal Thickness (km) 
+52.42767177909065 69.2000000000002 km
+

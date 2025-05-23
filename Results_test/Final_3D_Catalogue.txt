@@ -1,0 +1,2 @@
+Date        	Time        	Event_id    	mb          	Lat         	Lon         	Smaj_Err    	Smin_Err    	Az          	ISC_Depth   	R_Depth     	Error       
+2010/05/23  	22:46:50.77 	14721049    	6.2         	-14.0233    	-74.4050    	6.5         	4.2         	70          	99.6        	97.4        	2.0         	

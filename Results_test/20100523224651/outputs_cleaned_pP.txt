@@ -1,0 +1,2 @@
+array_no	array_lat    	array_lon    	epicentral_distance	backazimuth	dt_pP	depth	P_abs_onset       	pP_abs_onset      	amplitude_P	amplitude_pP
+['A0']	[31.86002]	[-100.9114592]	[52.42767178]	[149.6806455]	[25.9]	[108.7423]	2010-05-23T22:55:52.800000Z	2010-05-23T22:56:18.700000Z	0.8293941741119302	0.9894813243273645

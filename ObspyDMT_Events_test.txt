@@ -1,0 +1,2 @@
+EQ Name     	Event_ID 	mb  	Lat     	Lon     	Depth   	yyyy	mn	dd	hh	mm	ss
+2010523224651	14721049 	6.21	-13.9831	-74.3693	99.6423 	2010	5 	23	22	46	51

@@ -1,0 +1,2 @@
+Event          	Event_ID  	Baz     	Gcarc   	Cr1_thk 	Bpt_Lat 	Bpt_Lon 	pmP_amp 	pP_amp  	pP-pmP_dt 	New_Cr_thk  
+20100523224651 	14721049.0	149.68  	52.43   	70.0    	-13.8373	-74.4512	0.1811  	1.0195  	21.536    	69.2        
