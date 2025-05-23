@@ -12,6 +12,7 @@ Created on 15/05/2025
 import pickle
 import sys
 import os
+import shutil
 from pathlib import Path
 
 from obspydmt import run_obspyDMT
@@ -32,14 +33,14 @@ from pmP_catalogue import assemble_clean_pmP_cat
 #[If looking at multiple events, download intial obspyDMT catalogue separately then run rest of steps per event (can use a task array)]
 
 # Run once 
-make_obspydmt_catalogue = True
+make_obspydmt_catalogue = False
 
 # Can be run as part of a task array, 1 process per event
-download_data = True
+download_data = False
 process_data = True
 array_process_data = True
 make_array_figures = True
-relocate_with_iscloc = True   # can be run once for all files in ISCloc/inputs --> all_events=True
+relocate_with_iscloc = True  # can be run once for all files in ISCloc/inputs --> all_events=True
 find_crustal_thickness = True
 
 # Run once if necessary
@@ -64,8 +65,7 @@ else:
         sys.exit()
 
 # Set up -------------------------------------------------------
-cat_name = 'SASZ_Deep_Events_ObspyDMT'
-#cat_name = 'ObspyDMT_Events'
+cat_name = 'ObspyDMT_Events'
 
 # Make project file structure
 '''Parent_dir -- Scripts -- pmP_scripts
@@ -97,8 +97,13 @@ final_EQ_cat_txt=str(results_dir)+'/' + final_EQ_cat_name + '.txt'
 
 # Download initial ObpsyDMT event catalogue ----------------------
 if make_obspydmt_catalogue:
+    # Delete pre-existing ObspyDMT directory if exists
+    if os.path.exists(str(obspydmt_dir)) and os.path.isdir(str(obspydmt_dir)):
+        shutil.rmtree(str(obspydmt_dir))
+        print('Deleted %s (Pre-existing ObspyDMT Catalogue)' %str(obspydmt_dir))
+
     # change search parameters in obspydmt.py
-    run_obspyDMT(str(obspydmt_dir), make_catalogue=True, split_catalogue=False, download_data_Z=False, download_data_NEZ=False, single_event_download=False)
+    run_obspyDMT(str(obspydmt_dir), make_catalogue=True, split_catalogue=True, download_data_Z=False, download_data_NEZ=False, single_event_download=False)
 
 # Load in event catalogue
 cat_file = str(obspydmt_dir) + '/EVENTS-INFO/catalog.ml.pkl'
@@ -112,9 +117,9 @@ print('No. of Events in Catalogue:', len(catalogue))
 if download_data:
     # Download event data for whole ObspyDMT catalogue in sequence
     #run_obspyDMT(str(obspydmt_dir), make_catalogue=False, split_catalogue=False, download_data_Z=False, download_data_NEZ=True, single_event_download=False)
-
+    
     # Download data for specific event in catalogue
-    run_obspyDMT(str(obspydmt_dir), make_catalogue=False, split_catalogue=True, download_data_Z=False, download_data_NEZ=True, single_event_download=True, event=event) #events count from 1
+    run_obspyDMT(str(obspydmt_dir), make_catalogue=False, split_catalogue=False, download_data_Z=False, download_data_NEZ=True, single_event_download=True, event=event) #events count from 1
 
 
 if process_data:

@@ -30,7 +30,23 @@ def assemble_clean_pmP_cat(uncleaned_pmP_cat, final_3D_EQ_cat, obspydmt_cat_name
 
     #Load data points
     evname, eventid, baz, gcarc, crust1_depth, lat, lon, pmP_pw_amp, pP_pw_amp, pmP_amp, pP_amp, delay_time, moho_depth = np.loadtxt(uncleaned_pmP_cat, skiprows=1, unpack=True, usecols=(0,1,2,3,4,5,6,7,8,9,10,11,12))
-
+    print(lat)
+    
+    if type(lat) is not np.ndarray:
+        evname = np.array([evname])
+        eventid = np.array([eventid])
+        baz = np.array([baz])
+        gcarc = np.array([gcarc])
+        crust1_depth = np.array([crust1_depth])
+        lat = np.array([lat])
+        lon = np.array([lon])
+        pmP_pw_amp = np.array([pmP_pw_amp])
+        pP_pw_amp = np.array([pP_pw_amp])
+        pmP_amp = np.array([pmP_amp])
+        pP_amp = np.array([pP_amp])
+        delay_time = np.array([delay_time])
+        moho_depth = np.array([moho_depth])  
+    
     print('No. of Data Points pre-pmP clean:', len(lat))
     print()
 

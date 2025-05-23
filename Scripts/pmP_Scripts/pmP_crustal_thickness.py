@@ -186,8 +186,9 @@ def determine_crustal_thickness(catalogue, event, gen_dir, res_dir, reprocess, m
                     with open(cleaned_pP, 'r') as file:
                         for line in file:
                             for i in range(len(test_subarrays_list)):
-                                if str(test_subarrays_list[i].outputs.ev_array_gcarc) in line:
+                                if str(test_subarrays_list[i].outputs.ev_array_gcarc)[:8] in line:  # [:8] because one value is rounded and one isn't, keep an eye that this isn't a problem
                                      subarray_clean[i] = True
+                                     print('True')
                 except:
                     print('No pP-P pairs from 1D relocation process')
                     sys.exit()

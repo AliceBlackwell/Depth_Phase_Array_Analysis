@@ -339,22 +339,9 @@ def make_figures(catalogue, event, component, data_file, results_file):
     if component == 'T':
 
         #--------- Set Event ---------------
-
-        # Define event catalogue (ObspyDMT file structure), and processed seismic data locations
-        catalogue_name = '/localhome/not-backed-up/ee18ab/00_ANDES_DATA/ANDES_ObspyDMT'
-
-        # Load event from ObspyDMT catalogue
-        cat_file = catalogue_name + '/EVENTS-INFO/catalog.ml.pkl'
-
-        with open(cat_file, 'rb') as f:
-            catalogue = pickle.load(f)
-            
-        # Select event from catalogue and define attributes
-        event = Earthquake_event(catalogue[input_no-1])
+        event = Earthquake_event(catalogue[int(input_no)-1])
         event.define_event()
-
-        print("Event names is:",event.evname)
-        
+    
         # S arrays
         S_stla = []
         S_stlo = []
@@ -381,7 +368,7 @@ def make_figures(catalogue, event, component, data_file, results_file):
             
         # Load in processed Z,N,E data
         #print(data_file)
-        stream = obspy.read(data_file + "Data/" + "*.MSEED")
+        stream = obspy.read(data_file + "/Data/" + "*.MSEED")
         stream_N = stream.select(component='N')
         stream_E = stream.select(component='E')
         stream_Z = stream.select(component='Z')
@@ -400,7 +387,7 @@ def make_figures(catalogue, event, component, data_file, results_file):
         final_stream = Stream()
         for j in range (len(stations)):
             #print(stations[j])
-            st = streamZ.select(network = stations[j][:2], station = stations[j][3:])
+            st = stream_Z.select(network = stations[j][:2], station = stations[j][3:])
             #print(st)
             #if len(st) == 3:
             final_stream.extend(st)
