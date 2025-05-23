@@ -65,7 +65,7 @@ else:
         sys.exit()
 
 # Set up -------------------------------------------------------
-cat_name = 'ObspyDMT_Events'
+cat_name = 'ObspyDMT_Events_test'
 
 # Make project file structure
 '''Parent_dir -- Scripts -- pmP_scripts
