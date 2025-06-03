@@ -5,7 +5,7 @@ Wrapper to create catalogue, download data, process data, array process, make ar
 [Comment in/out steps needed]
 
 Created on 15/05/2025
-@author: ee18ab
+@author: Alice Blackwell (and Hanna-Riia Allas for pmP Scripts)
 """
 
 # Import ------------------------------------------------------ 
@@ -102,7 +102,13 @@ if make_obspydmt_catalogue:
         shutil.rmtree(str(obspydmt_dir))
         print('Deleted %s (Pre-existing ObspyDMT Catalogue)' %str(obspydmt_dir))
 
-    # change search parameters in obspydmt.py
+    # change search parameters directly in obspydmt.py
+    '''  run_obspyDMT Flags: 
+    make_catalogue: True/False, choose to create ObspyDMT initial catalogue of events
+    split_catalogue: True/False, choose to split ObspyDMT catalogue text file into one text file per event (placed into individual_catalogues directory) --> useful for data download using task arrays/parallelisation
+    download_data_Z: True/False, choose to download Z component data for ObspyDMT event catalogue
+    download_data_NEZ: True/False, choose to download N,E,Z component data for ObspyDMT event catalogue
+    single_event_download: True/False, choose whether you are running script for a single event or a whole catalogue downoad, i.e. True if using a task array/parallelisation which works with 1 event per process, False if running one job which works sequentially through the ObspyDMT catalogue.'''
     run_obspyDMT(str(obspydmt_dir), make_catalogue=True, split_catalogue=True, download_data_Z=False, download_data_NEZ=False, single_event_download=False)
 
 # Load in event catalogue
@@ -124,16 +130,25 @@ if download_data:
 
 if process_data:
     # Process Z component data ---------------------------------------
+    ''' process_Z_components Flags: 
+    re_processing: True/False, choose to start data processing from 'saved' point --> .npy arrays saved in Processed_DATA/evname/Arrays directory which store names of stations which pass the processing steps per earthquake, these are then used to generate final MSEED and xml outputs again in Processed_DATA/evname/Stations and Processed_Data/evname/Data.'''
     re_processing = True
     process_Z_components(catalogue, event, re_processing, str(obspydmt_dir), str(project_root))
 
     # Process N/E/1/2 component data ---------------------------------
+    ''' process_NE_components Flags: 
+    re_processing: True/False, choose to start data processing from 'saved' point --> .npy arrays saved in Processed_DATA/evname/Arrays directory which store names of stations which pass the processing steps per earthquake, these are then used to generate final MSEED and xml outputs again in Processed_DATA/evname/Stations and Processed_Data/evname/Data.'''
     re_processing = True
     process_NE_components(catalogue, event, re_processing, str(obspydmt_dir), str(project_root))
 
 
 # Run array processing -------------------------------------------
 if array_process_data:
+    ''' run_array_processing Flags: 
+    component: 'Z' or 'ZNE', choose components to use in array processing
+    do_array_processing: True/False, choose to redo array processing, or start from 'saved' point --> Array_Z.npy and Array_T.npy arrays saved in Results/evname/ directory which store array processing results (vespagrams, picks etc.) per earthquake, these are then used to generate final pick text files and/or ISCloc input files. If set to False and Array_Z.npy/Array_T.npy are missing, script will default to running array processing.
+    depth_conversion: True/False, choose to generate final pick text files used for pmP analysis (based upon 1D event relocation in depth, not to be used as a new earthquake relocation, only for ad-hoc array pick summary files!)
+    iscloc: True/False, choose to generate ISCloc input files (found in Results/ISCloc/inputs), ready for 3D earthquake relocation. '''
     component = 'ZNE'   # string: 'Z' or 'ZNE'
 
     # ISCloc preparation
@@ -146,7 +161,27 @@ if array_process_data:
 
 # Make array figures ---------------------------------------------
 if make_array_figures:
-    component = 'Z' # 'Z' or 'T'
+    # Turn figures on and off in figures.py script
+    ''' make_figures Flags:
+    component: 'Z' or 'T', choose component for which to make ad-hoc array figures. 
+    
+    Figures available: 
+    	beampacking_figure -- polar plot showing beampacking search grid for P or S, and resultant peak normalised amplitude. 
+        timeshifted_traces -- slowness corrected ad-hoc array traces used for beamforming
+        vespagram_fig      -- simple vespagram for ad-hoc arrays
+        threshold          -- plot showing the dynamic threshold selected for an ad-hoc array
+        picking_figure     -- vespagram with picks
+        comparison_grid    -- slowness and backazimuth with ranges set between 'calculated' values and 'beampack-determined' values per ad-hoc array, with resultant P wave beams 
+        corr_fig           -- cross-correlation plots per trace in an ad-hoc array, comparing trace to beam
+        QC_fig             -- vespagram plots used for quality controlling the ad-hoc arrays, checking for coherent peaks along the expected slowness found for the ad-hoc array
+        final_vespa        -- vespagram with finalised picks only
+        beampack_beams     -- combined figure with polar plot from beampacking_figure, and a comparison between the 'calculated' and 'beampacking-determined' beams per ad-hoc array
+        vespas_combined    -- vespagram, optimum beam and all picks (including highlighted final picks)
+        QC_vespas_combined -- vespgram alongside quality control vespagram tests from QC_fig. 
+        
+        Recommend as default: picking_figure, beampack_beams and vespas_combined. '''
+        
+    component = 'Z'
     make_figures(catalogue, event, component, str(data_dir), str(results_dir))
 
 
@@ -168,6 +203,11 @@ if find_crustal_thickness:
     
     if os.path.exists(final_EQ_cat_txt):
         # Can only use the final catalogue for inital depths in pmP scripts if strip_iscloc_results has been run and generated Final_3D_Catalogue.txt
+        ''' determine_crustal_thickness Flags:
+        reprocess: True/False, choose to start data processing from 'saved' point --> .npy arrays saved
+        make_figures: True/False, choose to make ad-hoc array pmP figures
+        plot_velocity_models: True/False, choose to plot velocity model used during pmP detection
+        include_sea: True/False, choose to include sea or not in velocity model used for pmP detection (include_sea = True is largely untested!).'''
         determine_crustal_thickness(catalogue, event, pmP_dir, str(results_dir), reprocess=True, make_figures=True, plot_velocity_models=False, include_sea=False, final_EQ_cat_txt=final_EQ_cat_txt, depth=False)
     
     else:
