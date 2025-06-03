@@ -146,7 +146,7 @@ if process_data:
 if array_process_data:
     ''' run_array_processing Flags: 
     component: 'Z' or 'ZNE', choose components to use in array processing
-    do_array_processing: True/False, choose to redo array processing, or start from 'saved' point --> array_Z.npy and array_T.npy arrays saved in Results/evname/ directory which store array processing results (vespagrams, picks etc.) per earthquake, these are then used to generate final pick text files and/or ISCloc input files. If set to False and Array_Z.npy/Array_T.npy are missing, script will default to running array processing.
+    do_array_processing: True/False, choose to redo array processing, or start from 'saved' point --> array_Z.npy and array_T.npy arrays saved in Results/evname/ directory which store array processing results (vespagrams, picks etc.) per earthquake, these are then used to generate final pick text files and/or ISCloc input files. If set to False and array_Z.npy/array_T.npy are missing, script will default to running array processing.
     depth_conversion: True/False, choose to generate final pick text files used for pmP analysis (based upon 1D event relocation in depth, not to be used as a new earthquake relocation, only for ad-hoc array pick summary files!)
     iscloc: True/False, choose to generate ISCloc input files (found in Results/ISCloc/inputs), ready for 3D earthquake relocation. '''
     component = 'ZNE'   # string: 'Z' or 'ZNE'
