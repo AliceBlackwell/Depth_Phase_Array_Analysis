@@ -49,3 +49,44 @@ python main.py n m
 ```
 
 The workflow is fully described in ADD_PAPER_HERE.
+
+## 🧾 Example Test Case
+
+To try out the workflow, use the example event and data provided in ObspyDMT_Events_test.  
+This contains a pre-generated ObspyDMT event catalogue for the Mw 6.1 Peruvian event on 23rd May 2010, and a small selection of pre-downloaded 3-component seismic data.  
+
+[Note: In a real use case, both initial event catalogue generation and data downloading are handled automatically by the workflow. These steps have been skipped in this example to streamline testing.]
+
+From the Scripts/ directory, run the following command:
+```bash
+python main.py
+```
+
+This will: 
++ Output finalised phase lists
++ Relocate the event in 3D using ISCloc
++ Determine crustal thickness approximately overlying the event location
+
+### 🔍 Comparing Results (your outputs) to Results_test (reference outputs)
+After running the workflow with the example dataset (ObspyDMT_Events_test), you can verify the outputs by comparing your results to the provided reference results in the Results_test/ directory.  
+
+Compare the following output files:
+
+- **Final 3D relocated earthquake catalogue:**  
+  `Final_3D_Catalogue.txt`
+
+- **Final crustal thickness catalogue:**  
+  `Final_pmP_catalogue_5.9.txt`
+
+- **1D relocated earthquake catalogue with ad-hoc array details**  
+  *(not to be used for event location):*  
+  `Final_1D_Catalogue_detailed.txt`
+
+- **Final list of cleaned ad-hoc array phases:**  
+  `20100523224651/Phase_list.txt`
+
+### How to Compare
+Use the diff command (or any file comparison tool) to inspect differences:
+```bash
+diff -r Results/file Results_test/file
+```
