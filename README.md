@@ -39,7 +39,7 @@ Compile ISCloc (including changing the Makefile to point towards conda packages)
 ```bash
 # From the Depth_Phase_Array_Analysis directory
 mv compile_iscloc.sh ISClocRelease2.2.6/src  # (or src2.2.7 if available)
-cd ISClocRelease2.2.6/src2.2.7
+cd ISClocRelease2.2.6/src  # (or src2.2.7 if available)
 source compile_iscloc.sh
 ```
 
