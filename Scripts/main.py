@@ -44,7 +44,7 @@ relocate_with_iscloc = True  # can be run once for all files in ISCloc/inputs --
 find_crustal_thickness = True
 
 # Run once if necessary
-make_final_catalogues = False
+make_final_catalogues = True
 
 
 # Earthquake to analyse ------------------------------------------
