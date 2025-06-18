@@ -254,21 +254,21 @@ def main(input_txt, iscloc_inputs):
                         n_td_pP_AB += 1
                     if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssP',line): # sP
                         n_td_sP_AB += 1
-                    if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sP',line): # S
+                    if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sS',line): # S
                         n_td_S_AB += 1
                     if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssS',line): # sS
                         n_td_sS_AB += 1                    
-                else:
-                    if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sP',line): # P
-                        n_P_AB += 1 
-                    if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\spP',line): # pP
-                        n_pP_AB += 1
-                    if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssP',line): # sP
-                        n_sP_AB += 1
-                    if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sP',line): # S
-                        n_S_AB += 1
-                    if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssS',line): # sS
-                        n_sS_AB += 1
+
+                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sP',line): # P
+                n_P_AB += 1 
+                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\spP',line): # pP
+                n_pP_AB += 1
+                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssP',line): # sP
+                n_sP_AB += 1
+                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sS',line): # S
+                n_S_AB += 1
+                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssS',line): # sS
+                n_sS_AB += 1
                             
     n_dp_AB = n_pP_AB + n_sP_AB + n_sS_AB    
     n_td_dp_AB = n_td_pP_AB + n_td_sP_AB + n_td_sS_AB
@@ -286,21 +286,21 @@ def main(input_txt, iscloc_inputs):
                     n_td_pP += 1
                 if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssP',line): # sP
                     n_td_sP += 1
-                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sP',line): # S
+                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sS',line): # S
                     n_td_S += 1
                 if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssS',line): # sS
                     n_td_sS += 1                    
-            else:
-                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sP',line): # P
-                    n_P += 1 
-                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\spP',line): # pP
-                    n_pP += 1
-                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssP',line): # sP
-                    n_sP += 1
-                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sP',line): # S
-                    n_S += 1
-                if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssS',line): # sS
-                    n_sS += 1
+
+            if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sP',line): # P
+                n_P += 1 
+            if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\spP',line): # pP
+                n_pP += 1
+            if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssP',line): # sP
+                n_sP += 1
+            if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sS',line): # S
+                n_S += 1
+            if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssS',line): # sS
+                n_sS += 1
     
     n_dp = n_pP + n_sP + n_sS
     n_td_dp = n_td_pP + n_td_sP + n_td_sS
