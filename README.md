@@ -32,7 +32,16 @@ pip install -r requirements.txt
 
 Set up ISCloc:  
 
-Go to [ISCloc](https://www.isc.ac.uk/iscbulletin/iscloc/) to download algorithm directory directly from the ISC, and move directory into Depth_Phase_Array_Analysis/Scripts
+Go to [ISCloc](https://www.isc.ac.uk/iscbulletin/iscloc/) to download algorithm directory directly from the ISC, and move directory into Depth_Phase_Array_Analysis/Scripts  
+Edit config file for ISCloc to suit needs:
+```bash
+nano ISClocRelease2.2.6/etc/iscloc/config.txt
+
+# update_db = 0
+# out_agency = AB  (the agency code your new relocation will be associated with, I use my initials)
+# do_gridsearch = 0 (seeds on ISC location, 1 would complete a grid search centred on the median reported location and origin time)
+# mindepthpha = 5
+```
 
 Compile ISCloc (including changing the Makefile to point towards conda packages) and edit .bashrc:
 
