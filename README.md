@@ -91,7 +91,7 @@ Compare the following output files:
   `Final_3D_Catalogue.txt`
 
 - **Final crustal thickness catalogue:**  
-  `Final_pmP_catalogue_5.9.txt`
+  `Final_cleaded_pmP_catalogue_5.9.txt`
 
 - **1D relocated earthquake catalogue with ad-hoc array details**  
   *(not to be used for event location):*  
