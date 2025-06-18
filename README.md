@@ -32,7 +32,7 @@ pip install -r requirements.txt
 
 Set up ISCloc:  
 
-Use link ([ISCloc](https://www.isc.ac.uk/iscbulletin/iscloc/)) to download algorithm directory directly from the ISC, and move directory into Depth_Phase_Array_Analysis/Scripts
+Go to ([ISCloc](https://www.isc.ac.uk/iscbulletin/iscloc/)) to download algorithm directory directly from the ISC, and move directory into Depth_Phase_Array_Analysis/Scripts
 
 Compile ISCloc (including changing the Makefile to point towards conda packages) and edit .bashrc:
 
