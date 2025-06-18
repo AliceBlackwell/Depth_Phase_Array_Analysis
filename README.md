@@ -30,9 +30,15 @@ conda activate dpa-env
 pip install -r requirements.txt
 ```
 
+Set up ISCloc:  
+
+Use link ([ISCloc](https://www.isc.ac.uk/iscbulletin/iscloc/)) to download algorithm directory directly from the ISC, and move directory into Depth_Phase_Array_Analysis/Scripts
+
 Compile ISCloc (including changing the Makefile to point towards conda packages) and edit .bashrc:
 
 ```bash
+# From the Depth_Phase_Array_Analysis directory
+mv compile_iscloc.sh ISClocRelease2.2.6/src  # (or src2.2.7 if available)
 cd ISClocRelease2.2.6/src2.2.7
 source compile_iscloc.sh
 ```
