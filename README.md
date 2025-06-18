@@ -67,7 +67,7 @@ The workflow is fully described in ADD_PAPER_HERE.
 
 ## 🧾 Example Test Case
 
-To try out the workflow, use the example event and data provided in ObspyDMT_Events_test.  
+To try out the workflow using the example event and data provided in ObspyDMT_Events_test.  
 This contains a pre-generated ObspyDMT event catalogue for the Mw 6.1 Peruvian event on 23rd May 2010, and a small selection of pre-downloaded 3-component seismic data.  
 
 [Note: In a real use case, both the generation of the initial event catalogue and the data downloading are handled automatically by the workflow. These steps have been skipped in this example to streamline testing.]
