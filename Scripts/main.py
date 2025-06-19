@@ -27,6 +27,8 @@ sys.path.append(os.path.abspath('pmP_Scripts'))
 from pmP_crustal_thickness import determine_crustal_thickness
 from pmP_catalogue import assemble_clean_pmP_cat
 
+from DOIs import make_doi_list
+
 # Choose steps to run ------------------------------------------
 #[Only skip steps if you already have the necessary outputs -- e.g. ObspyDMT catalogue, processed data]
 #[Recommend doing everything in one go if you are looking at a single event]
@@ -45,6 +47,7 @@ find_crustal_thickness = True
 
 # Run once if necessary
 make_final_catalogues = True
+make_data_doi_list = True
 
 
 # Earthquake to analyse ------------------------------------------
@@ -213,13 +216,18 @@ if find_crustal_thickness:
     else:
         determine_crustal_thickness(catalogue, event, pmP_dir, str(results_dir), reprocess=True, make_figures=True, plot_velocity_models=False, include_sea=False, final_EQ_cat_txt=False, depth=depth) 
 
-    # Make 3D earthquake relocation catalogue ------------------------
+    # Make final cleaned pmP catalogue ------------------------
     if int(event) == int(total_events): # only run once, on final event
         assemble_clean_pmP_cat(uncleaned_pmP_cat=str(results_dir) + '/Final_pmP_catalogue_5.9.txt', final_3D_EQ_cat=final_EQ_cat_txt, obspydmt_cat_name=cat_file, cleaned_pmP_cat=str(results_dir) + '/Final_cleaned_pmP_catalogue.txt')
 
+# Force scripts to make final catalogues --------------------------
 if make_final_catalogues == True:
     strip_iscloc_results(final_EQ_cat_txt, analysis_only=False, iscloc_inputs=inputs_dir, iscloc_outputs=outputs_dir, include_original_phase_results=False)	
     assemble_clean_pmP_cat(uncleaned_pmP_cat=str(results_dir) + '/Final_pmP_catalogue_5.9.txt', final_3D_EQ_cat=final_EQ_cat_txt, obspydmt_cat_name=cat_file, cleaned_pmP_cat=str(results_dir) + '/Final_cleaned_pmP_catalogue.txt')
+
+# Make list of station/seismic data DOIs
+if make_data_doi_list == True:
+    make_doi_list()
 
 print()
 print('Scripts complete.')
