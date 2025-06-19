@@ -12,6 +12,7 @@ This project automatically does the following:
 - Detects key depth phases (P, pP, sP, S, sS)
 - Performs earthquake relocation using [ISCloc](https://www.isc.ac.uk/iscbulletin/iscloc/)
 - Enables optional pmP detection for crustal thickness determination
+- Creates DOI list of processed seismic data
 
 ## 🛠️ Installation
 
