@@ -260,15 +260,15 @@ def main(input_txt, iscloc_inputs):
                         n_td_sS_AB += 1                    
 
                 if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sP',line): # P
-                n_P_AB += 1 
+                    n_P_AB += 1 
                 if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\spP',line): # pP
-                n_pP_AB += 1
+                    n_pP_AB += 1
                 if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssP',line): # sP
-                n_sP_AB += 1
+                    n_sP_AB += 1
                 if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\sS',line): # S
-                n_S_AB += 1
+                    n_S_AB += 1
                 if re.search('[A-z0-9]+\s+[0-9]+\.[0-9]+\s+[0-9]+\.+[0-9]\ssS',line): # sS
-                n_sS_AB += 1
+                    n_sS_AB += 1
                             
     n_dp_AB = n_pP_AB + n_sP_AB + n_sS_AB    
     n_td_dp_AB = n_td_pP_AB + n_td_sP_AB + n_td_sS_AB
