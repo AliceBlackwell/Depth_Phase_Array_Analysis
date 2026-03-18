@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 Set up ISCloc:  
 
-Go to [ISCloc](https://www.isc.ac.uk/iscbulletin/iscloc/) to download algorithm directory directly from the ISC, and move directory into Depth_Phase_Array_Analysis/Scripts  
+Go to [ISCloc](https://www.isc.ac.uk/iscbulletin/iscloc/) to download the algorithm directory directly from the ISC, and move directory into Depth_Phase_Array_Analysis/Scripts  
 Edit config file for ISCloc to suit needs:
 ```bash
 nano ISClocRelease2.2.6/etc/iscloc/config.txt
@@ -64,7 +64,7 @@ python main.py n m
 # (leave blank for a single event use)
 ```
 
-The workflow is fully described in ADD_PAPER_HERE.
+The workflow is fully described in "Assessing the impact of automatically derived depth phases on the determination of earthquake hypocentres–application to the South American subduction zone" and "Mapping the crustal thickness of the Andes using pmP phases identified from adaptive teleseismic array data" (Blackwell et al., 2026).
 
 ## 🧾 Example Test Case
 
